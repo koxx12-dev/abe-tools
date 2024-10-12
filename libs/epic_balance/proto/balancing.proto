@@ -1,0 +1,1621 @@
+syntax = "proto2";
+
+package abepic.balancing;
+
+message BonusEventBalancingData {
+    message BonusEventData {
+        enum BonusEventType {
+            BONUS_EVENT_TYPE_UNSPECIFIED = 0;
+            DUNGEON_BONUS = 1;
+            ARENA_POINT_BONUS = 2;
+            SHARDS_FOR_OBJECTIVE = 3;
+            CC_LOOT_BONUS = 4;
+            RAINBOW_BAR_BONUS = 5;
+            MASTERY_BONUS = 6;
+        }
+
+        optional string name_id = 1;
+        optional BonusEventType bonus_type = 2 [default = BONUS_EVENT_TYPE_UNSPECIFIED];
+        optional float bonus_factor = 3 [default = 0];
+        optional uint32 start_date = 4;
+        optional uint32 end_date = 5;
+        optional string icon_id = 6;
+        optional string atlas_id = 7;
+        optional string locale_id = 8;
+        optional bool teased_before_running = 9 [default = false];
+    }
+
+    repeated BonusEventData bonus_event_data = 1;
+}
+
+message Requirement {
+    enum RequirementType {
+        NONE = 0;
+        PAY_ITEM = 1;
+        HAVE_ITEM = 2;
+        NOT_HAVE_ITEM = 3;
+        HAVE_BIRD = 4;
+        LEVEL = 5;
+        COOLDOWN_FINISHED = 6;
+        IS_SPECIFIC_WEEKDAY = 7;
+        IS_NOT_SPECIFIC_WEEKDAY = 8;
+        HAVE_CURRENT_HOTPSOT_STATE = 9;
+        HAVE_PASSED_CYCLE_TIME = 10;
+        NOT_HAVE_PASSED_CYCLE_TIME = 11;
+        NOT_HAVE_ITEM_WITH_LEVEL = 12;
+        HAVE_ITEM_WITH_LEVEL = 13;
+        USED_FRIENDS = 14;
+        HAVE_UNLOCKED_HOTPSOT = 15;
+        NOT_HAVE_UNLOCKED_HOTPSOT = 16;
+        HAVE_LESS_THAN = 17;
+        HAVE_BIRD_COUNT = 18;
+        HAVE_ALL_UPGRADES = 19;
+        NOT_HAVE_ALL_UPGRADES = 20;
+        NOT_USE_BIRD_IN_BATTLE = 21;
+        USE_BIRD_IN_BATTLE = 22;
+        HAVE_MASTERY_FACTOR = 23;
+        NOT_HAVE_MASTERY_FACTOR = 24;
+        NOT_HAVE_CLASS = 25;
+        IS_CONVERTED = 26;
+        HAVE_EVENT_CAMPAIGN_HOTSPOT_STATE = 27;
+        HAVE_TOTAL_ITEMS_IN_COLLECTION = 28;
+        LOST_PVP_BATTLE = 29;
+        HAVE_EVENT_SCORE = 30;
+        HAVE_CLASS = 31;
+        HAVE_CURRENT_CHRONICLE_CAVE_STATE = 32;
+        TUTORIAL_COMPLETED = 33;
+        TOTAL_MONEY_SPENT = 34;
+        LOST_UNRESOLVED_HOTSPOT = 35;
+        UNLOCKED_ALL_CLASSES = 36;
+        BIRD_MASTERY_FACTOR_MINIMUM = 37;
+        BIRD_MASTERY_FACTOR_MAXIMUM = 38;
+        HIGHEST_LEAGUE_REACHED = 39;
+        TIME_SINCE_LAST_PURCHASE = 40;
+        DECLINED_OFFER = 41;
+        ACCEPTED_OFFER = 42;
+        ENDED_OFFER = 43;
+        UNLOCKED_ALL_SKINS = 44;
+    }
+
+    optional RequirementType requirement_type = 1 [default = NONE];
+    optional string name_id = 2;
+    optional float value = 3 [default = 0];
+}
+
+message EventBalancingData {
+    message EventData {
+        optional string name_id = 1;
+        optional int32 max_amount_of_event_items = 2 [default = 0];
+        map<string, int32> event_generator_item_loot_table = 3;
+        optional string asset_base_id = 4;
+        optional string loca_base_id = 5;
+        map<string, int32> event_reward_loot_table_wheel = 6;
+        repeated string event_bonus_loot_tables_per_rank = 7;
+        map<int32, int32> star_rating_for_ranking = 8;
+        optional Requirement reroll_result_requirement = 9;
+        optional float time_for_encounter_respawn_in_sec = 10 [default = 0];
+        optional int32 max_number_of_collectibles = 11 [default = 0];
+        map<string, int32> event_collectible_generator_item_loot_table = 12;
+        optional float time_for_collectible_respawn_in_sec = 13 [default = 0];
+        optional float mini_campaign_unlock_delay = 14 [default = 0];
+        map<string, int32> event_mini_campaign_item_loot_table = 16;
+        map<string, int32> event_boss_item_loot_table = 17;
+       optional string boss_id = 18;
+       optional string event_reward_first_rank = 19;
+       optional float reroll_result_cost_increase = 20 [default = 0];
+       optional float reroll_result_cost_max = 21 [default = 0];
+       optional string reward_chest_id_main = 22;
+       optional string reward_chest_id_fallback = 23;
+    }
+
+    repeated EventData event_data = 1;
+}
+
+message EventManagerBalancingData {
+    message EventManagerData {
+        optional string name_id = 1;
+        optional string event_id = 2;
+        optional uint32 event_teaser_start_time_stamp = 3;
+        optional uint32 event_start_time_stamp = 4;
+        optional uint32 event_end_time_stamp = 5;
+        optional uint32 maximum_matchmaking_players = 6;
+        optional string matchmaking_strategy = 7;
+        optional string lobby_prefix = 8;
+        optional int32 online_matchmake_timeout_in_sec = 9 [default = 0];
+        optional string online_fallback_matchmaking_strategy = 10;
+        optional int32 failed_with_no_players_count_till_fallback = 11 [default = 0];
+        optional string offline_get_competitors_function = 12;
+        optional string offline_get_competitors_fallback_function = 13;
+        optional float wait_time_for_other_player_to_fill_boss_list = 14 [default = 0];
+    }
+
+    repeated EventManagerData event_manager_data = 1;
+}
+
+message EventPlacementBalancingData {
+    message EventPlacementData {
+        optional string name_id = 1;
+        repeated Requirement spawn_able_requirements = 2;
+        optional string category = 3;
+        optional string override_battle_ground_name = 4;
+    }
+
+    repeated EventPlacementData event_placement_data = 1;
+}
+
+message PvPSeasonManagerBalancingData {
+    message PvPSeasonManagerData {
+        optional string name_id = 1;
+        optional uint32 season_start_time_stamp = 2;
+        optional uint32 season_end_time_stamp = 3;
+        optional int32 season_turn_amount = 4 [default = 0];
+        repeated string pvp_reward_loot_tables_per_league = 5;
+        repeated string pvp_bonus_loot_tables_per_rank = 6;
+        map<int32, int32> star_rating_for_ranking = 7;
+        optional Requirement reroll_result_requirement = 8;
+        optional uint32 maximum_matchmaking_players = 9;
+        optional int32 max_league = 10 [default = 0];
+        optional string loca_base_id = 11;
+        optional string matchmaking_strategy = 12;
+        optional string lobby_prefix = 13;
+        optional int32 online_matchmake_timeout_in_sec = 14 [default = 0];
+        optional string online_fallback_matchmaking_strategy = 15;
+        optional int32 failed_with_no_players_count_till_fallback = 16 [default = 0];
+        optional string offline_get_competitors_function = 17;
+        optional string offline_get_competitors_fallback_function = 18;
+        optional string offline_get_battle_function = 19;
+        optional int32 time_till_matchmaking_battle_refreshes = 20 [default = 0];
+        optional int32 hour_of_day_to_refresh_energy_and_objectives = 21 [default = 0];
+        optional int32 max_matchmaking_difficulty = 22 [default = 0];
+        repeated string pvp_reward_first_rank = 23;
+        optional float reroll_result_cost_increase = 24 [default = 0];
+        optional float reroll_result_cost_max = 25 [default = 0];
+        map<int32, string> treshold_rewards = 26;
+        optional int32 trophy_id = 27 [default = 0];
+    }
+
+    repeated PvPSeasonManagerData pvp_season_manager_data = 1;
+}
+
+message AchievementBalancingData {
+    message AchievementData {
+        optional string name_id = 1;
+        optional int32 value = 2 [default = 0];
+    }
+
+    repeated AchievementData achievement_data = 1;
+}
+
+enum CharacterSizeType {
+    CHARACTER_SIZE_TYPE_SMALL = 0;
+    CHARACTER_SIZE_TYPE_MEDIUM = 1;
+    CHARACTER_SIZE_TYPE_LARGE = 2;
+    CHARACTER_SIZE_TYPE_BOSS = 3;
+}
+
+message BannerBalancingData {
+    message BannerData {
+        optional string name_id = 1;
+        optional string asset_id = 2;
+        optional string locale_id = 3;
+        optional string default_inventory_name_id = 4;
+        optional int32 base_health = 5 [default = 0];
+        optional int32 per_level_health = 6 [default = 0];
+        optional CharacterSizeType size_type = 7;
+        optional int32 sort_priority = 8 [default = 0];
+    }
+
+    repeated BannerData banner_data = 1;
+}
+
+enum InventoryItemType {
+    INVENTORY_ITEM_TYPE_NONE = 0;
+    INVENTORY_ITEM_TYPE_RESOURCES = 1;
+    INVENTORY_ITEM_TYPE_INGREDIENTS = 2;
+    INVENTORY_ITEM_TYPE_MAIN_HAND_EQUIPMENT = 3;
+    INVENTORY_ITEM_TYPE_OFF_HAND_EQUIPMENT = 4;
+    INVENTORY_ITEM_TYPE_CONSUMABLE = 5;
+    INVENTORY_ITEM_TYPE_PREMIUM = 6;
+    INVENTORY_ITEM_TYPE_STORY = 7;
+    INVENTORY_ITEM_TYPE_PLAYER_TOKEN = 8;
+    INVENTORY_ITEM_TYPE_POINTS = 9;
+    INVENTORY_ITEM_TYPE_CLASS = 10;
+    INVENTORY_ITEM_TYPE_PLAYER_STATS = 11;
+    INVENTORY_ITEM_TYPE_CRAFTING_RECIPES = 12;
+    INVENTORY_ITEM_TYPE_EVENT_BATTLE_ITEM = 13;
+    INVENTORY_ITEM_TYPE_EVENT_COLLECTIBLE = 14;
+    INVENTORY_ITEM_TYPE_MASTERY = 15;
+    INVENTORY_ITEM_TYPE_BANNER_TIP = 16;
+    INVENTORY_ITEM_TYPE_BANNER = 17;
+    INVENTORY_ITEM_TYPE_BANNER_EMBLEM = 18;
+    INVENTORY_ITEM_TYPE_EVENT_CAMPAIGN_ITEM = 19;
+    INVENTORY_ITEM_TYPE_EVENT_BOSS_ITEM = 20;
+    INVENTORY_ITEM_TYPE_COLLECTION_COMPONENT = 21;
+    INVENTORY_ITEM_TYPE_TROPHY = 22;
+    INVENTORY_ITEM_TYPE_SKIN = 23;
+}
+
+enum EquipmentSource {
+    EQUIPMENT_SOURCE_LOOT = 0;
+    EQUIPMENT_SOURCE_CRAFTING = 1;
+    EQUIPMENT_SOURCE_GATCHA = 2;
+    EQUIPMENT_SOURCE_SET_ITEM = 3;
+    EQUIPMENT_SOURCE_LOOT_BIRD = 4;
+    EQUIPMENT_SOURCE_DAILY_GIFT = 5;
+}
+
+message BannerItemBalancingData {
+    message BannerItemData {
+        optional string name_id = 1;
+        optional InventoryItemType item_type = 2 [default = INVENTORY_ITEM_TYPE_NONE];
+        optional string asset_base_id = 3;
+        optional string loca_base_id = 4;
+        optional int32 sort_priority = 5 [default = 0];
+        repeated string skill_name_ids = 6;
+        repeated float color_vector = 7 [packed = false];
+        map<string, int32> scrap_loot = 8;
+        optional int32 base_stat = 9 [default = 0];
+        optional float stat_per_level_in_percent = 10 [default = 0];
+        repeated int32 stat_per_quality_base = 11 [packed = false];
+        repeated int32 stat_per_quality_percent = 12 [packed = false];
+        optional string corresponding_set_item = 13;
+        optional string unlockable_set_skill_name_id = 14;
+        optional bool flag_as_new = 15 [default = false];
+        optional EquipmentSource mainsource = 16;
+        optional bool hide_in_preview = 17 [default = false];
+        optional int32 stars = 18 [default = 0];
+    }
+
+    repeated BannerItemData banner_item_data = 1;
+}
+
+message BasicItemBalancingData {
+    message BasicItemData {
+        optional string name_id = 1;
+        optional InventoryItemType item_type = 2 [default = INVENTORY_ITEM_TYPE_NONE];
+        optional string asset_base_id = 3;
+        optional string loca_base_id = 4;
+        optional int32 sort_priority = 5 [default = 0];
+        optional int32 set_as_new_in_shop = 6 [default = 0];
+    }
+
+    repeated BasicItemData basic_item_data = 1;
+}
+
+
+message BasicShopOfferBalancingData {
+    message BasicShopOfferData {
+        optional int32 level = 1 [default = 0];
+        map<string, int32> offer_contents = 2;
+        optional int32 sort_priority = 3 [default = 0];
+        optional int32 slot_id = 4 [default = 0];
+        optional string category = 5;
+        optional string name_id = 6;
+        optional string asset_id = 7;
+        optional string locale_id = 8;
+        optional int32 discount_value = 9 [default = 0];
+        repeated Requirement obsolete_discount_requirements = 10;
+        optional int32 obsolete_discount_start_date = 11 [default = 0];
+        optional int32 obsolete_discount_end_date = 12 [default = 0];
+        optional int32 obsolete_discount_duration = 13 [default = 0];
+        optional bool unique_offer = 14 [default = false];
+        optional string atlas_name_id = 15;
+        repeated float special_offer_background_color = 16 [packed = false];
+        repeated float special_offer_label_color = 17 [packed = false];
+        optional string special_offer_locale_id = 18;
+        optional bool display_as_large = 19 [default = false];
+        optional bool obsolete_show_discount_popup = 20 [default = false];
+        optional string obsolete_popup_loca = 21;
+        optional string obsolete_popup_icon_id = 22;
+        optional string obsolete_popup_atlas_id = 23;
+        optional int32 obsolete_discount_cooldown = 24 [default = 0];
+        optional int32 duration = 25 [default = 0];
+        optional int32 start_date = 26 [default = 0];
+        optional int32 end_date = 27 [default = 0];
+        repeated Requirement buy_requirements = 28;
+        repeated Requirement show_requirements = 29;
+        optional int32 obsolete_special_offer_prio = 30 [default = 0];
+        optional string obsolete_speech_bubble_loca = 31;
+        optional bool obsolete_always_show_speech_bubble = 32 [default = false];
+        optional bool hide_unless_on_sale = 33 [default = false];
+
+        oneof subtype {
+            BuyableShopOfferBalancingData BuyableShopOfferBalancingData = 50;
+            PremiumShopOfferBalancingData PremiumShopOfferBalancingData = 70;
+            GachaShopOfferBalancingData GachaShopOfferBalancingData = 90;
+        }
+    }
+
+    repeated BasicShopOfferData basic_shop_offer_data = 1;
+}
+
+message BuyableShopOfferBalancingData {
+    optional int32 discount_price = 52 [default = 0];
+    optional bool display_after_purchase = 53 [default = false];
+    optional bool obsolete_exclusive_offer = 54 [default = false];
+}
+
+message PremiumShopOfferBalancingData {
+    optional string discount_price_ident = 71;
+    optional bool sticky = 72 [default = false];
+    optional float sticky_cooldown = 73 [default = 0];
+    optional float dollar_price = 74 [default = 0];
+    optional string prefab_id = 75;
+    optional string prefab_mini_id = 76;
+    optional string result_chest_id = 77;
+    optional string banner_loca = 78;
+}
+
+message GachaShopOfferBalancingData {}
+
+message EnviormentalEffects {
+    optional Faction faction = 1;
+    optional string asset_id = 2;
+}
+
+enum Faction {
+    FACTION_BIRDS = 0;
+    FACTION_PIGS = 1;
+    FACTION_NONE = 2;
+    FACTION_NON_ATTACKABLE_PIG = 3;
+}
+
+message ChronicleCaveBattleBalancingData {
+}
+
+message BattleBalancingData {
+    message BattleData {
+        enum ScoringStrategy {
+            FIXED_MAXIMUM = 0;
+            MAXIMUM_BY_STRENGTH = 1;
+            PVP = 2;
+        }
+
+        optional string name_id = 1;
+        optional int32 base_level = 2 [default = 0];
+        repeated string battle_participants_ids = 3;
+        map<string, int32> loot_table_wheel = 4;
+        map<string, int32> loot_table_additional = 5;
+        optional int32 strength_points = 6 [default = 0];
+        repeated Requirement battle_requirements = 7;
+        map<string, int32> loot_table_lost = 8;
+        optional string background_asset_id = 9;
+        optional int32 usable_friend_birds_count = 10 [default = 0];
+        optional string sound_asset_id = 11;
+        optional ScoringStrategy scoring_strategy = 12;
+        optional int32 bonus_points = 13 [default = 0];
+        repeated EnviormentalEffects environmental_effects = 14;
+        optional int32 environmental_start_wave = 15 [default = 0];
+        optional int32 max_birds_in_battle = 16 [default = 0];
+        optional float additional_attack_in_percent = 17 [default = 0];
+        optional float additional_health_in_percent = 18 [default = 0];
+        map<int32, string> loot_table_wheel_after_wave = 19;
+        optional string force_character = 20;
+        optional float power_level_threshold_low = 21 [default = 0];
+        optional float power_level_threshold_high = 22 [default = 0];
+        optional bool apply_power_level_balancing = 23 [default = false];
+        optional int32 difficulty = 24 [default = 0];
+        map<string, int32> bonus_loot = 25;
+        optional string battle_type = 26;
+        optional float powerlevel_modifier = 27 [default = 0];
+
+        oneof subtype {
+            ChronicleCaveBattleBalancingData ChronicleCaveBattleBalancingData = 90;
+        }
+    }
+
+    repeated BattleData battle_data = 1;
+}
+
+message BattleHintBalancingData {
+    message BattleHintData {
+        optional string name_id = 1;
+        optional string locale_id = 2;
+        optional string top_icon_id = 3;
+        optional string top_atlas_id = 4;
+        optional string bottom_icon_id = 5;
+        optional string bottom_atlas_id = 6;
+        map<string, int32> recommended_classes = 7;
+    }
+
+    repeated BattleHintData battle_hint_data = 1;
+}
+
+message VictoryCondition {
+    enum VictoryConditionTypes {
+        DEFEAT_ALL = 0;
+        DEFEAT_EXPLICIT = 1;
+        SURVIVE_TURNS = 2;
+        CHARACTER_SURVIVE_TURNS = 3;
+        FINISH_IN_TURNS = 4;
+    }
+
+    optional VictoryConditionTypes type = 1 [default = DEFEAT_ALL];
+    optional string name_id = 2;
+    optional float value = 3 [default = 0];
+}
+
+message BattleParticipantTableEntry {
+    optional string name_id = 1;
+    optional int32 level_difference = 2 [default = 0];
+    optional float probability = 3 [default = 0];
+    optional float amount = 4 [default = 0];
+    optional bool unique = 5 [default = false];
+    optional bool force_percent = 6 [default = false];
+}
+
+message ChronicleCaveBattleParticipantTableBalancingData {
+}
+
+message BattleParticipantTableBalancingData {
+    message BattleParticipantTableData {
+        enum BattleParticipantTableType {
+            IGNORE_STRENGTH = 0;
+            WEIGHTED = 1;
+            PROBABILITY = 2;
+        }
+
+        optional string name_id = 1;
+        optional BattleParticipantTableType type = 2 [default = IGNORE_STRENGTH];
+        optional VictoryCondition victory_condition = 3;
+        repeated BattleParticipantTableEntry battle_participants = 4;
+
+        oneof subtype {
+            ChronicleCaveBattleParticipantTableBalancingData ChronicleCaveBattleParticipantTableBalancingData = 90;
+        }
+    }
+
+    repeated BattleParticipantTableData battle_participant_table_data = 1;
+}
+
+message BirdBalancingData {
+    message BirdData {
+        optional string name_id = 1;
+        optional string asset_id = 2;
+        optional string locale_id = 3;
+        optional string default_inventory_name_id = 4;
+        optional int32 base_health = 5 [default = 0];
+        optional int32 base_attack = 6 [default = 0];
+        optional int32 per_level_health = 7 [default = 0];
+        optional int32 per_level_attack = 8 [default = 0];
+        optional CharacterSizeType size_type = 9;
+        optional string rage_skill_ident = 10;
+        optional int32 sort_priority = 11 [default = 0];
+        optional string pvp_rage_skill_ident = 12;
+    }
+
+    repeated BirdData bird_data = 1;
+}
+
+message BonusPerFriendBalancingData {
+    optional string name_id = 1;
+    optional int32 count = 2 [default = 0];
+    optional float attack_bonus = 3 [default = 0];
+    optional float health_bonus = 4 [default = 0];
+    optional float xp_bonus = 5 [default = 0];
+    optional string unlocked_class_name_id = 6;
+}
+
+message AiCombo {
+    optional float percentage = 1 [default = 0];
+    repeated string combo_chain = 2;
+}
+
+message BossBalancingData {
+    message BossData {
+        optional string name_id = 1;
+        optional string asset_id = 2;
+        optional string locale_id = 3;
+        optional string default_inventory_name_id = 4;
+        optional int32 base_health = 5 [default = 0];
+        optional int32 base_attack = 6 [default = 0];
+        optional int32 per_level_health = 7 [default = 0];
+        optional int32 per_level_attack = 8 [default = 0];
+        repeated string skill_name_ids = 9;
+        repeated AiCombo skill_combos = 10;
+        optional CharacterSizeType size_type = 11 [default = CHARACTER_SIZE_TYPE_SMALL];
+        optional Faction faction = 12 [default = FACTION_BIRDS];
+        map<string, int32> loot_table_defeat_bonus = 13;
+        optional float size_scale = 14 [default = 0];
+        optional int32 pig_strength = 15 [default = 0];
+        optional string passive_skill_name_id = 16;
+        optional bool ignore_difficulty = 17 [default = false];
+        optional int32 attacks_needed = 18 [default = 0];
+        map<string, int32> reward_for_killing_blow = 19;
+        map<string, int32> kill_reward_for_all = 20;
+        optional int32 reduce_score_percentage_on_bosswin = 21 [default = 0];
+        optional int32 duration_of_camp_destruction = 22 [default = 0];
+        optional int32 time_to_reach_camp = 23 [default = 0];
+        optional int32 time_to_reactivate = 24 [default = 0];
+        optional string collection_group_id = 25;
+        optional string defeated_label_locale_id = 26;
+    }
+
+    repeated BossData boss_data = 1;
+}
+
+message ChronicleCaveBalancingData {
+    message ChronicleCaveData {
+        optional string name_id = 1;
+    }
+
+    repeated ChronicleCaveData chronicle_cave_data = 1;
+}
+
+message ChronicleCaveFloorBalancingData {
+    message ChronicleCaveFloorData {
+        optional string name_id = 1;
+        optional int32 template_id = 2 [default = 0];
+        optional string background_id = 3;
+        repeated string chronicle_cave_hotspot_ids = 4;
+        optional string first_chronicle_cave_hotspot_id = 5;
+        optional string last_chronicle_cave_hotspot_id = 6;
+        optional string boss_name_id = 7;
+        repeated EnviormentalEffects environmental_effects = 8;
+    }
+
+    repeated ChronicleCaveFloorData chronicle_cave_floor_data = 1;
+}
+
+message ClassItemBalancingData {
+    message ClassItemData {
+        enum InterruptAction {
+            NONE = 0;
+            SUPPORT = 1;
+            RESET_CHAIN = 2;
+        }
+
+        optional string name_id = 1;
+        optional InventoryItemType item_type = 2 [default = INVENTORY_ITEM_TYPE_NONE];
+        optional string asset_base_id = 3;
+        optional string loca_base_id = 4;
+        optional int32 sort_priority = 5 [default = 0];
+        repeated string skill_name_ids = 6;
+        optional string restricted_bird_id = 7;
+        optional float obsolete_attack_boost_per_mastery_rank = 8 [default = 0];
+        optional float obsolete_health_boost_per_mastery_rank = 9 [default = 0];
+        repeated AiCombo skill_combos = 10;
+        optional string replacement_class_name_id = 11;
+        repeated string interrupt_condition_combos = 12;
+        optional InterruptAction interrupt_action = 13 [default = NONE];
+        optional string mastery = 14;
+        repeated AiCombo pvp_skill_combos = 15;
+        repeated string pvp_skill_name_ids = 16;
+        optional bool is_premium = 17 [default = false];
+        optional uint32 available_at = 18;
+        optional uint32 teased_at = 19;
+        optional bool inactive = 20 [default = false];
+    }
+
+    repeated ClassItemData class_item_data = 1;
+}
+
+message ClientConfigBalancingData {
+    message ClientConfigData {
+        optional string name_id = 1;
+        optional string bundle_id = 2;
+        optional uint64 apple_app_id = 3;
+        optional string google_play_store_key = 4;
+        optional string google_app_id = 5;
+        optional string wp8_app_id = 6;
+        optional string soundtrack_url = 7;
+        optional string ab_testing_group = 8;
+        optional bool use_auto_battle = 9 [default = false];
+        optional int32 facebook_friends_per_request = 11 [default = 0];
+        optional bool use_skynest_timing_service = 12 [default = false];
+        optional bool apply_minus_billion_fix = 13 [default = false];
+        optional int32 time_zone_persist_cooldown_in_sec = 14 [default = 0];
+        optional int32 pvp_equipment_level_delta_cap = 15 [default = 0];
+        optional bool enable_profile_merging = 16 [default = false];
+        optional bool enable_single_bird_revive = 17 [default = false];
+        optional bool intro_video_skippable = 18 [default = false];
+        optional Requirement show_interstitial_requirements = 19;
+        optional bool use_chimera_leaderboards = 20 [default = false];
+    }
+
+    repeated ClientConfigData client_config_data = 1;
+}
+
+message CollectionGroupBalancingData {
+    message CollectionGroupData {
+        optional string name_id = 1;
+        optional string loca_base_id = 2;
+        map<string, int32> reward = 3;
+        map<string, int32> fallback_reward = 4;
+        optional string reward_asset_base_id = 5;
+        optional string fallback_reward_asset_base_id = 6;
+        optional string reward_locale_id = 7;
+        optional string fallback_reward_locale_id = 8;
+        repeated Requirement component_requirements = 9;
+        map<string, int32> component_fallback_loot = 10;
+        repeated Requirement fallback_reward_requirements = 11;
+        map<string, int32> easy_battle_fallback_loot = 12;
+        map<string, int32> medium_battle_fallback_loot = 13;
+        map<string, int32> hard_battle_fallback_loot = 14;
+        map<string, int32> hard_battle_secondary_fallback_loot = 15;
+        map<string, int32> medium_battle_secondary_fallback_loot = 16;
+        map<string, int32> easy_battle_secondary_fallback_loot = 17;
+    }
+
+    repeated CollectionGroupData collection_group_data = 1;
+}
+
+message ConditionalInventoryBalancingData {
+    message ConditionalInventoryData {
+        enum ConditionalLootTableDropTrigger {
+            NOT_FIRST_START_UP = 0;
+            FIRST_START_UP = 1;
+            REMOVE_NOT_FIRST_START_UP = 2;
+        }
+
+        optional string name_id = 1;
+        repeated Requirement drop_requirements = 2;
+        map<string, int32> content = 3;
+        optional int32 initializing_level = 4 [default = 0];
+        optional ConditionalLootTableDropTrigger trigger = 5 [default = NOT_FIRST_START_UP];
+    }
+
+    repeated ConditionalInventoryData conditional_inventory_data = 1;
+}
+
+message ConsumableItemBalancingData {
+    message ConsumableItemData {
+        optional string name_id = 1;
+        optional InventoryItemType item_type = 2 [default = INVENTORY_ITEM_TYPE_NONE];
+        optional string asset_base_id = 3;
+        optional string loca_base_id = 4;
+        optional int32 sort_priority = 5 [default = 0];
+        optional string skill_name_id = 6;
+        map<string, float> skill_parameters = 7;
+        map<string, float> skill_parameters_delta_per_level = 8;
+        optional string consumable_statcking_type = 9;
+        optional int32 conversion_points = 10 [default = 0];
+        optional string instant_buy_offer_category_id = 11;
+    }
+
+    repeated ConsumableItemData consumable_item_data = 1;
+}
+
+message CraftingItemBalancingData {
+    message CraftingItemData {
+        optional string name_id = 1;
+        optional InventoryItemType item_type = 2 [default = INVENTORY_ITEM_TYPE_NONE];
+        optional string asset_base_id = 3;
+        optional string loca_base_id = 4;
+        optional int32 sort_priority = 5 [default = 0];
+        optional string recipe = 6;
+        optional string base_item_name_id = 7;
+        optional int32 value_of_base_item = 8 [default = 0];
+        optional string atlas_name_id = 9;
+    }
+    repeated CraftingItemData crafting_item_data = 1;
+}
+
+message CraftingRecipeBalancingData {
+    message CraftingRecipeData {
+        optional string name_id = 1;
+        optional InventoryItemType item_type = 2 [default = INVENTORY_ITEM_TYPE_NONE];
+        optional string asset_base_id = 3;
+        optional string loca_base_id = 4;
+        optional int32 sort_priority = 5 [default = 0];
+        map<string, int32> result_loot = 6;
+        optional InventoryItemType recipe_category_type = 7 [default = INVENTORY_ITEM_TYPE_NONE];
+    }
+
+    repeated CraftingRecipeData crafting_recipe_data = 1;
+}
+
+message CustomMessageBalancingData {
+    message CustomMessageData {
+        optional string name_id = 1;
+        optional string npc_name_id = 2;
+        optional string locale_id = 3;
+        map<string, int32> loot_table_reward = 4;
+        optional string button_atlas_id = 5;
+        optional string button_sprite_name_id = 6;
+        optional string url_to_open = 7;
+        repeated Requirement add_message_requirements = 8;
+    }
+
+    repeated CustomMessageData custom_message_data = 1;
+}
+
+message DailyLoginGiftsBalancingData {
+    message DailyLoginGiftData {
+        optional string name_id = 1;
+        map<string, int32> day1 = 2;
+        map<string, int32> day2 = 3;
+        map<string, int32> day3 = 4;
+        map<string, int32> day4 = 5;
+        map<string, int32> day5 = 6;
+        map<string, int32> day6 = 7;
+        map<string, int32> day7 = 8;
+        map<string, int32> day8 = 9;
+        map<string, int32> day9 = 10;
+        map<string, int32> day10 = 11;
+        map<string, int32> day11 = 12;
+        map<string, int32> day12 = 13;
+        map<string, int32> day13 = 14;
+        map<string, int32> day14 = 15;
+        map<string, int32> day15 = 16;
+        map<string, int32> day16 = 17;
+        map<string, int32> day17 = 18;
+        map<string, int32> day18 = 19;
+        map<string, int32> day19 = 20;
+        map<string, int32> day20 = 21;
+        map<string, int32> day21 = 22;
+        map<string, int32> day22 = 23;
+        map<string, int32> day23 = 24;
+        map<string, int32> day24 = 25;
+        map<string, int32> day25 = 26;
+        map<string, int32> day26 = 27;
+        map<string, int32> day27 = 28;
+        map<string, int32> day28 = 29;
+        map<string, int32> day29 = 30;
+        map<string, int32> day30 = 31;
+        map<string, int32> day31 = 32;
+        repeated int32 high_light_days = 33 [packed = false];
+    }
+
+    repeated DailyLoginGiftData daily_login_gift_data = 1;
+}
+
+message EnchantingBalancingData {
+    message EnchantingData {
+        optional string name_id = 1;
+        optional float stats_boost = 2 [default = 0];
+        optional bool stars0_allowed = 3;
+        optional bool stars1_allowed = 4;
+        optional bool stars2_allowed = 5;
+        optional bool stars3_allowed = 6;
+        optional bool set_allowed = 7 [default = false];
+        repeated Requirement buy_requirements = 8;
+        optional float resource_costs = 9 [default = 0];
+        optional float lvl1_res_points = 10;
+        optional float lvl2_res_points = 11;
+        optional float lvl3_res_points = 12;
+        optional float scrapping_bonus = 13 [default = 0];
+        repeated Requirement buy_requirements_set = 14;
+        repeated Requirement skip_cost_requirement = 15;
+        optional int32 enchantment_level = 16 [default = 0];
+        optional int32 level_range = 17 [default = 0];
+        optional float booster_res_points = 18 [default = 0];
+    }
+
+    repeated EnchantingData enchanting_data = 1;
+}
+
+message EquipmentPerk {
+    enum PerkType
+    {
+        NONE = 0;
+        CRITICAL_STRIKE = 1;
+        BEDTIME = 2;
+        CHAIN_ATTACK = 3;
+        HOCUS_POKUS = 4;
+        DISPEL = 5;
+        VIGOR = 6;
+        MIGHT = 7;
+        VITALITY = 8;
+        INCREASE_RAGE = 9;
+        INCREASE_HEALING = 10;
+        REDUCE_RESPAWN = 11;
+        SHARE_BIRD_DAMAGE = 12;
+        ENRAGE = 13;
+        MYTHIC_PROTECTION = 14;
+        FINISHER = 15;
+        STRONGHOLD = 16;
+        JUSTICE = 17;
+    }
+
+    optional PerkType type = 1 [default = NONE];
+    optional float probablity_in_percent = 2 [default = 0];
+    optional float perk_value = 3 [default = 0];
+}
+
+message EquipmentBalancingData {
+    message EquipmentData {
+        optional string name_id = 1;
+        optional InventoryItemType item_type = 2 [default = INVENTORY_ITEM_TYPE_NONE];
+        optional string asset_base_id = 3;
+        optional string loca_base_id = 4;
+        optional int32 sort_priority = 5 [default = 0];
+        optional int32 base_stat = 6 [default = 0];
+        optional int32 stat_per_level = 7 [default = 0];
+        optional int32 stat_per_quality = 8 [default = 0];
+        repeated int32 stat_per_quality_percent = 9 [packed = false];
+        optional int32 animation_index = 10 [default = 0];
+        optional bool is_ranged = 11 [default = false];
+        optional string projectile_asset_id = 12;
+        optional EquipmentPerk perk = 13;
+        optional string restricted_bird_id = 14;
+        optional bool direct_asset_and_loca = 15 [default = false];
+        optional string corresponding_set_item_id = 16;
+        optional int32 asset_level_offset = 17 [default = 0];
+        optional int32 asset_cycle_count = 18 [default = 0];
+        optional string hit_effect_suffix = 19;
+        optional string set_item_skill = 20;
+        optional bool direct_projectile_asset_and_loca = 21 [default = false];
+        optional EquipmentSource mainsource = 22;
+        optional bool show_as_new = 23 [default = false];
+        optional bool hide_in_preview = 24 [default = false];
+        optional string pvp_set_item_skill = 25;
+    }
+
+    repeated EquipmentData equipment_data = 1;
+}
+
+message EventItemBalancingData {
+    message EventItemData {
+        optional string name_id = 1;
+        optional InventoryItemType item_type = 2 [default = INVENTORY_ITEM_TYPE_NONE];
+        optional string asset_base_id = 3;
+        optional string loca_base_id = 4;
+        optional int32 sort_priority = 5 [default = 0];
+        repeated string event_parameters = 6;
+        repeated string spawn_categories = 7;
+    }
+
+    repeated EventItemData event_item_data = 1;
+}
+
+message EventPopupBalancingData {
+    message EventPopupData {
+        optional string name_id = 1;
+        optional uint32 start_time_stamp = 2;
+        optional uint32 end_time_stamp = 3;
+    }
+
+    repeated EventPopupData event_popup_data = 1;
+}
+
+message ExperienceLevelBalancingData {
+    message ExperienceLevelData {
+        optional string name_id = 1;
+        optional int32 experience = 2 [default = 0];
+        map<string, int32> loot_table_additional = 3;
+        optional int32 matchmaking_range_index = 4 [default = 0];
+        optional float mastery_modifier = 5 [default = 0];
+        optional int32 old_experience = 6 [default = 0];
+    }
+
+    repeated ExperienceLevelData experience_level_data = 1;
+}
+
+message ExperienceMasteryBalancingData {
+    message ExperienceMasteryData {
+        optional string name_id = 1;
+        optional int32 experience = 2 [default = 0];
+        optional int32 old_experience = 3 [default = 0];
+        optional int32 ancient_experience = 4 [default = 0];
+        optional int32 stat_bonus = 5 [default = 0];
+    }
+
+    repeated ExperienceMasteryData experience_mastery_data = 1;
+}
+
+message ExperienceScalingBalancingData {
+    message ExperienceScalingData {
+        optional string name_id = 1;
+        optional float difference = 2 [default = 0];
+        optional float xp_modifier = 3 [default = 0];
+    }
+
+    repeated ExperienceScalingData experience_scaling_data = 1;
+}
+
+message GlobalDifficultyBalancingData {
+    message GlobalDifficultyData {
+        optional string name_id = 1;
+        optional float bird_attack_in_percent = 2 [default = 0];
+        optional float bird_health_in_percent = 3 [default = 0];
+        optional float equipment_in_percent = 4 [default = 0];
+        optional float pig_attack_in_percent = 5 [default = 0];
+        optional float pig_health_in_percent = 6 [default = 0];
+        optional float max_strength_point_adjustment = 7 [default = 0];
+    }
+
+    repeated GlobalDifficultyData global_difficulty_data = 1;
+}
+
+message ChronicleCaveHotspotBalancingData {
+}
+
+message HotspotBalancingData {
+    message HotspotData {
+        enum HotspotType {
+            UNKNOWN = 0;
+            BATTLE = 1;
+            RESOURCE = 2;
+            NODE = 3;
+        }
+
+        optional string name_id = 1;
+        optional HotspotType type = 2 [default = UNKNOWN];
+        repeated string battle_id = 3;
+        map<string, int32> hotspot_contents = 4;
+        optional string zone_locale_ident = 5;
+        optional int32 zone_stage_index = 6 [default = 0];
+        repeated Requirement obsolete_enter_requirements = 7;
+        optional uint32 cooldown_in_seconds = 8;
+        repeated Requirement obsolete_visible_requirements = 9;
+        optional bool is_spawn_event_possible = 10 [default = false];
+        optional int32 progress_id = 11 [default = 0];
+        optional int32 order_id = 12 [default = 0];
+        optional bool is_spawn_golden_pig_possible = 13 [default = false];
+        optional bool use_progress_indicator = 14 [default = false];
+        optional bool auto_spawn_birds = 15 [default = false];
+        optional bool count_for_stars = 16 [default = false];
+        optional int32 max_level = 17 [default = 0];
+
+        oneof subtype {
+            ChronicleCaveHotspotBalancingData ChronicleCaveHotspotBalancingData = 90;
+        }
+    }
+
+    repeated HotspotData hotspot_data = 1;
+}
+
+message InventoryBalancingData {
+    message InventoryData {
+        optional string name_id = 1;
+        map<string, int32> default_inventory_content = 2;
+        optional int32 initializing_level = 3 [default = 0];
+    }
+
+    repeated InventoryData inventory_data = 1;
+}
+
+message LoadingHintBalancingData {
+    message LoadingHintData {
+        enum LoadingArea {
+            WORLD_MAP = 0;
+            CAMP = 1;
+            ARENA = 2;
+            BATTLE = 3;
+            CHRONICLE_CAVE = 4;
+        }
+
+        optional string name_id = 1;
+        repeated Requirement show_requirements = 2;
+        optional float weight = 3 [default = 0];
+        repeated LoadingArea target_areas = 4;
+    }
+
+    repeated LoadingHintData loading_hint_data = 1;
+}
+
+message LootTableEntry {
+    optional string name_id = 1;
+    optional int32 level_min_incl = 2 [default = 0];
+    optional int32 level_max_excl = 3 [default = 0];
+    optional float probability = 4 [default = 0];
+    optional int32 base_value = 5 [default = 0];
+    optional int32 span = 6 [default = 0];
+    optional int32 current_player_level_delta = 7 [default = 0];
+}
+
+message LootTableBalancingData {
+    message LootTableData {
+        enum LootTableType {
+            PROBABILITY = 0;
+            WEIGHTED = 1;
+            INVENTORY = 2;
+            WHEEL = 3;
+            WHEEL_FORCED = 4;
+        }
+
+        optional string name_id = 1;
+        repeated LootTableEntry loot_table_entries = 2;
+        optional LootTableType type = 3 [default = PROBABILITY];
+        optional string prefab_id = 4;
+        optional string locale_id = 5;
+    }
+
+    repeated LootTableData loot_table_data = 1;
+}
+
+message MasteryItemBalancingData {
+    message MasteryItemData {
+        optional string name_id = 1;
+        optional InventoryItemType item_type = 2 [default = INVENTORY_ITEM_TYPE_NONE];
+        optional string asset_base_id = 3;
+        optional string loca_base_id = 4;
+        optional int32 sort_priority = 5 [default = 0];
+        optional string associated_bird = 6;
+        optional string associated_class = 7;
+        optional string set_as_new_in_shop = 8;
+        repeated int32 mastery_points_for_rank_up = 9 [packed = false];
+        map<string, int32> fallback_loot_table = 10;
+        map<string, int32> fallback_loot_table_daily_login = 11;
+        repeated int32 mastery_points_for_rank_up_old = 12 [packed = false];
+    }
+
+    repeated MasteryItemData mastery_item_data = 1;
+}
+
+message MiniCampaignBalancingData {
+    message MiniCampaignData {
+        optional string name_id = 1;
+        repeated string hotspot_ids = 3;
+        optional string portal_event_node_id = 5;
+        optional string loca_base_id = 6;
+        optional string collection_group_id = 7;
+        optional int32 progress_summand = 8 [default = 0];
+        optional string music_title = 9;
+    }
+
+    repeated MiniCampaignData mini_campaign_data = 1;
+}
+
+message PigBalancingData {
+    message PigData {
+        optional string name_id = 1;
+        optional string asset_id = 2;
+        optional string locale_id = 3;
+        optional string default_inventory_name_id = 4;
+        optional int32 base_health = 5 [default = 0];
+        optional int32 base_attack = 6 [default = 0];
+        optional int32 per_level_health = 7 [default = 0];
+        optional int32 per_level_attack = 8 [default = 0];
+        repeated string skill_name_ids = 9;
+        repeated AiCombo skill_combos = 10;
+        optional CharacterSizeType size_type = 11 [default = CHARACTER_SIZE_TYPE_SMALL];
+        optional Faction faction = 12 [default = FACTION_BIRDS];
+        map<string, int32> loot_table_defeat_bonus = 13;
+        optional float size_scale = 14 [default = 0];
+        optional int32 pig_strength = 15 [default = 0];
+        optional string passive_skill_name_id = 16;
+        optional bool ignore_difficulty = 17 [default = false];
+    }
+
+    repeated PigData pig_data = 1;
+}
+
+message PigTypePowerLevelBalancingData {
+    message PigTypePowerLevelData {
+        optional string name_id = 1;
+        optional float power_level_weight = 2 [default = 0];
+    }
+
+    repeated PigTypePowerLevelData pig_type_power_level_data = 1;
+}
+
+message PowerLevelBalancingData {
+    message PowerLevelData {
+        optional string name_id = 1;
+        optional float attack_modifier = 2 [default = 0];
+        optional float health_modifier = 3 [default = 0];
+        optional float obsolete_power_base_weight = 4 [default = 0];
+        optional int32 expected_player_powerlevel = 5 [default = 0];
+    }
+
+    repeated PowerLevelData power_level_data = 1;
+}
+
+message PvPaiBalancingData {
+    message PvPaiData {
+        optional string name_id = 1;
+        optional int32 basic_banner_weight = 2 [default = 0];
+        optional int32 basic_bird_weight = 3 [default = 0];
+        optional int32 add_banner_weight_below80 = 4;
+        optional int32 add_banner_weight_below60 = 5;
+        optional int32 add_banner_weight_below40 = 6;
+        optional int32 add_banner_weight_below20 = 7;
+        optional int32 add_bird_weight_below50 = 8;
+        optional int32 add_bird_weight_below30 = 9;
+        optional int32 rage_red_prio = 10 [default = 0];
+        optional int32 rage_yellow_prio = 11 [default = 0];
+        optional int32 rage_black_prio = 12 [default = 0];
+        optional int32 rage_blue_prio = 13 [default = 0];
+        optional float chance_to_use_random_target = 14 [default = 0];
+        optional int32 rage_white_prio = 15 [default = 0];
+        optional float chance_to_focus_bird_with3 = 16;
+        optional float chance_to_focus_bird_with2 = 17;
+        optional float chance_to_focus_bird_with1 = 18;
+    }
+
+    repeated PvPaiData pvpai_data = 1;
+}
+
+message PvPObjectivesBalancingData {
+    message PvPObjectivesData {
+        enum ObjectivesRequirement {
+            WIN_TOTAL = 0;
+            WIN_ROW = 1;
+            DONT_HEAL = 2;
+            USE_BIRD = 3;
+            USE_CLASS = 4;
+            NOT_USE_BIRD = 5;
+            NOT_KILL = 6;
+            NOT_USE_RAGE = 7;
+            GET_AMOUNT_STARS = 8;
+            KILL_WITH_RAGE = 9;
+            WITH_BIRDS_ALIVE = 10;
+            KILL_AT_ONCE = 11;
+            KILL_BIRD = 12;
+            PROTECT_BIRD = 13;
+            WIN_WHILE_BIRDS_DEAD = 14;
+            KILL_WITH_BANNER = 15;
+            KILL_BIRDS_IN_BATTLE = 16;
+            KILL_BANNER_IN_ENEMY_TURN = 17;
+            KILL_WITH_BIRD = 18;
+            USE_RAGE = 19;
+            KILL_BIRDS_IN_ROUND = 20;
+            MULTI_USE_CLASSES = 21;
+            NO_SUPPORT_SKILLS = 22;
+            WIN_AFTER_COIN_LOSE = 23;
+        }
+
+        optional string name_id = 1;
+        optional ObjectivesRequirement requirement = 2 [default = WIN_TOTAL];
+        optional string locale_ident = 3;
+        optional string requirement_value = 4;
+        optional string requirement_value2 = 5;
+        optional int32 amount = 6 [default = 0];
+        optional string difficulty = 7;
+        optional string asset_icon_id = 8;
+        optional int32 daily_group_id = 9 [default = 0];
+        optional int32 reward = 10 [default = 0];
+        optional int32 player_level = 11 [default = 0];
+    }
+
+    repeated PvPObjectivesData pvp_objectives_data = 1;
+}
+
+message ResourceCostPerLevelBalancingData {
+    message ResourceCostPerLevelData {
+        optional string name_id = 1;
+        optional int32 level = 2 [default = 0];
+        optional string applied_item_name_id = 3;
+        optional string first_material_name_id = 4;
+        optional int32 first_material_amount = 5 [default = 0];
+        optional string second_material_name_id = 6;
+        optional int32 second_material_amount = 7 [default = 0];
+        optional string third_material_name_id = 8;
+        optional int32 third_material_amount = 9 [default = 0];
+        optional string fallback_item_name = 10;
+        optional int32 fallback_item_count = 11 [default = 0];
+    }
+
+    repeated ResourceCostPerLevelData resource_cost_per_level_data = 1;
+}
+
+message SaleItemDetails {
+    enum SaleParameter {
+        PRICE = 0;
+        VALUE = 1;
+        SPECIAL = 2;
+        BUY = 3;
+        FREE = 4;
+    }
+
+    optional string subject_id = 1;
+    optional SaleParameter sale_parameter = 2 [default = PRICE];
+    optional int32 changed_value = 3 [default = 0];
+    optional string replacement_product_id = 4;
+}
+
+message SalesManagerBalancingData {
+    message SalesManagerData {
+        enum SaleContentType {
+            SHOP_ITEMS = 0;
+            MASTERY = 1;
+            RAINBOW_RIOT = 2;
+            GENERIC_BUNDLE = 3;
+            CLASS_BUNDLE = 4;
+            SET_BUNDLE = 5;
+            LUCKY_COIN_DISCOUNT = 6;
+            CHAIN = 7;
+        }
+
+        enum SaleAvailabilityType {
+            TIMED = 0;
+            PERSONAL_TIME_WINDOW = 1;
+            TIMED_SEQUENCE = 2;
+            CONDITIONAL = 3;
+            CONDITIONAL_COOLDOWN = 4;
+        }
+
+        enum SaleItemGrouping {
+            SIMULTANEOUS = 0;
+            SEQUENCE = 1;
+        }
+
+        optional string name_id = 1;
+        optional SaleContentType content_type = 2 [default = SHOP_ITEMS];
+        optional SaleAvailabilityType sale_type = 3 [default = TIMED];
+        repeated SaleItemDetails sale_details = 4;
+        optional SaleItemGrouping obsolete_grouping = 5 [default = SIMULTANEOUS];
+        optional uint32 start_time = 6;
+        optional uint32 end_time = 7;
+        repeated Requirement requirements = 8;
+        optional int32 duration = 9 [default = 0];
+        optional int32 sort_priority = 10 [default = 0];
+        optional string popup_icon_id = 11;
+        optional string popup_atlas_id = 12;
+        optional string loca_base_id = 13;
+        repeated float obsolete_offer_label_color = 14 [packed = false];
+        repeated float obsolete_offer_background_color = 15 [packed = false];
+        optional string checkout_category = 16;
+        optional int32 cooldown = 17 [default = 0];
+        optional bool show_contents_in_popup = 18 [default = false];
+        optional int32 priority_in_queue = 19 [default = 0];
+        optional bool recheck_requirements = 20 [default = false];
+        optional string prefab_id = 21;
+        optional bool unique = 22 [default = false];
+        optional bool infinite = 23 [default = false];
+    }
+
+    repeated SalesManagerData sales_manager_data = 1;
+}
+
+message ScoreBalancingData {
+    message ScoreData {
+        optional string name_id = 1;
+        optional int32 score_per_star_needed = 2 [default = 0];
+        optional int32 score_for_all_full_birds = 3 [default = 0];
+        optional int32 score_for_all_full_pigs = 4 [default = 0];
+        optional int32 pig_score_loss_per_turn_in_percent = 5 [default = 0];
+        optional int32 minimum_bird_score_in_percent = 6 [default = 0];
+        optional int32 minimum_pig_score_in_percent = 7 [default = 0];
+        optional int32 score_per_strength_point32 = 8;
+        optional int32 score_per_bird = 9 [default = 0];
+        optional int32 minimum_banner_score_in_percent = 10 [default = 0];
+        optional int32 score_for_banner_defeated = 11 [default = 0];
+        optional int32 max_pvp_bird_defeats_counted = 12 [default = 0];
+        optional int32 score_for_pvp_bird_defeated = 13 [default = 0];
+        optional int32 score_per_star_needed_pvp = 14 [default = 0];
+        optional int32 max_score_for_banner_survive = 15 [default = 0];
+        optional int32 power_level_factor_for_damage = 16 [default = 0];
+        optional int32 power_level_factor_per_set_item_bird = 17 [default = 0];
+        optional int32 power_level_factor_for_complete_set_bird = 18 [default = 0];
+        optional int32 power_level_factor_per_set_item_banner = 19 [default = 0];
+        optional int32 power_level_factor_for_complete_set_banner = 20 [default = 0];
+        optional int32 power_level_divide_end_value = 21 [default = 0];
+        optional int32 pig_power_level_divide_value = 22 [default = 0];
+    }
+
+    repeated ScoreData score_data = 1;
+}
+
+message ShopBalancingData {
+    message ShopData {
+        optional string name_id = 1;
+        optional int32 slots = 2 [default = 0];
+        repeated string categories = 3;
+        optional string asset_id = 4;
+        optional string locale_id = 5;
+        optional string atlas_id = 6;
+    }
+
+    repeated ShopData shop_data = 1;
+}
+
+message SkillBalancingData {
+    message SkillData {
+        enum PigTargetingBehavior {
+            PIG_TARGETING_BEHAVIOR_NONE = 0;
+            PIG_TARGETING_BEHAVIOR_WEAKEST = 1;
+            PIG_TARGETING_BEHAVIOR_WEAKEST_NO_OWN_BUFF = 2;
+            PIG_TARGETING_BEHAVIOR_STRONGEST = 3;
+            PIG_TARGETING_BEHAVIOR_STRONGEST_NO_OWN_DEBUFF = 4;
+            PIG_TARGETING_BEHAVIOR_CURSED = 5;
+            PIG_TARGETING_BEHAVIOR_BLESSED = 6;
+            PIG_TARGETING_BEHAVIOR_TAUNTING = 7;
+            PIG_TARGETING_BEHAVIOR_TAUNTING_NO_OWN_BUFF = 8;
+            PIG_TARGETING_BEHAVIOR_CHARGE_TARGET = 9;
+            PIG_TARGETING_BEHAVIOR_MOST_DEBUFF_WEAKEST = 10;
+            PIG_TARGETING_BEHAVIOR_RED_BIRD = 11;
+            PIG_TARGETING_BEHAVIOR_YELLOW_BIRD = 12;
+            PIG_TARGETING_BEHAVIOR_WHITE_BIRD = 13;
+            PIG_TARGETING_BEHAVIOR_BLACK_BIRD = 14;
+            PIG_TARGETING_BEHAVIOR_BLUE_BIRDS = 15;
+            PIG_TARGETING_BEHAVIOR_SELF_PIG = 16;
+        }
+
+        enum SkillEffectTypes {
+            SKILL_EFFECT_TYPES_NONE = 0;
+            SKILL_EFFECT_TYPES_BLESSING = 1;
+            SKILL_EFFECT_TYPES_CURSE = 2;
+            SKILL_EFFECT_TYPES_PASSIVE = 3;
+            SKILL_EFFECT_TYPES_ENVIRONMENTAL = 4;
+            SKILL_EFFECT_TYPES_SET_PASSIVE = 5;
+            SKILL_EFFECT_TYPES_SET_HIT = 6;
+        }
+
+        enum SkillTargetTypes {
+            SKILL_TARGET_TYPES_UNSPECIFIED = 0;
+            SKILL_TARGET_TYPES_ATTACK = 1;
+            SKILL_TARGET_TYPES_SUPPORT = 2;
+            SKILL_TARGET_TYPES_PASSIVE = 3;
+            SKILL_TARGET_TYPES_ENVIRONMENTAL = 4;
+            SKILL_TARGET_TYPES_SET_PASSIVE = 5;
+            SKILL_TARGET_TYPES_SET_HIT = 6;
+        }
+
+        optional string name_id = 1;
+        optional string asset_id = 2;
+        optional string locale_id = 3;
+        map<string, float> skill_parameters = 4;
+        optional string skill_template_type = 5;
+        optional int32 effect_duration = 6 [default = 0];
+        optional SkillTargetTypes target_type = 7 [default = SKILL_TARGET_TYPES_UNSPECIFIED];
+        optional SkillEffectTypes effect_type = 8 [default = SKILL_EFFECT_TYPES_NONE];
+        optional PigTargetingBehavior targeting_behavior = 9 [default = PIG_TARGETING_BEHAVIOR_NONE];
+        optional bool target_already_affected_targets = 10 [default = false];
+        optional bool target_self_possible = 11 [default = false];
+        optional string icon_asset_id = 12;
+        optional string icon_atlas_id = 13;
+        optional string effect_icon_atlas_id = 14;
+        optional string effect_icon_asset_id = 15;
+        repeated string target_culling = 16;
+    }
+    repeated SkillData skill_data = 1;
+}
+
+message SocialEnvironmentBalancingData {
+    message SocialEnviormentData {
+        optional string name_id = 1;
+        optional uint32 time_for_get_friend_bird = 2;
+        optional uint32 time_for_free_gacha_roll_spawn = 3;
+        optional int32 high_max_free_rolls = 4 [default = 0];
+        optional int32 low_max_free_rolls = 5 [default = 0];
+        optional int32 min_friends_for_max_free_rolls = 6 [default = 0];
+        optional Requirement mighty_eagle_bird_reqirement = 7;
+        optional int32 max_friends_in_highscore_list = 8 [default = 0];
+        optional uint32 friendship_gate_help_cooldown = 9;
+        optional uint32 friendship_essence_cooldown = 10;
+        optional uint32 cache_friend_bird_time = 11;
+        optional int32 friend_ship_essence_message_cap = 12 [default = 0];
+        map<string,int32> facebook_daily_bonus = 13;
+        optional Requirement skip_cooldown_requirement = 14;
+        optional int32 mc_cool_visit_min_cooldown = 15 [default = 0];
+        optional int32 mc_cool_visit_max_cooldown = 16 [default = 0];
+        optional int32 max_rewards_for_pvp = 17 [default = 0];
+        optional int32 pvp_fallback_chance_hard = 18 [default = 0];
+        optional int32 pvp_fallback_chance_medium = 19 [default = 0];
+        map<string,int32> pvp_fallback_easy = 20;
+        map<string,int32> pvp_fallback_medium = 21;
+        map<string,int32> pvp_fallback_hard = 22;
+    }
+
+    repeated SocialEnviormentData social_enviorment_data = 1;
+}
+
+message ThirdPartyIdBalancingData {
+    message ThirdPartyIdData {
+        optional string name_id = 1;
+        optional string payment_product_id = 2;
+        optional string gamecenter_achievement_id = 3;
+        optional string chimera_google_play_achievement_id = 4;
+        optional string rovio_google_play_achievement_id = 5;
+        optional int32 x_box_live_achievement_id = 6 [default = 0];
+    }
+
+    repeated ThirdPartyIdData third_party_id_data = 1;
+}
+
+message LevelRangeValueTable {
+    optional int32 from_level = 1 [default = 0];
+    optional int32 to_level = 2 [default = 0];
+    optional int32 value = 3 [default = 0];
+}
+
+message WorldBalancingData {
+    message WorldBalancingData {
+        optional string name_id = 1;
+        optional string first_hotspot_name_id = 2;
+        optional int32 max_pigs_in_battle = 3 [default = 0];
+        optional float rage_meter_increase_per_hit_in_percent = 4 [default = 0];
+        optional float rage_meter_increase_per_hi_after_first_aoe_in_percent = 5 [default = 0];
+        optional float rage_meter_increase_per_passive_effect_in_percent = 6 [default = 0];
+        optional float rage_meter_full_on_total_health_lost_factor = 7 [default = 0];
+        optional float cost_to_scrap_loot_rate_crafting = 8 [default = 0];
+        optional float cost_to_scrap_loot_rate_gacha = 9 [default = 0];
+        optional float time_for_resource_respawn = 10 [default = 0];
+        optional float reference_attack_value_base = 11 [default = 0];
+        optional float reference_attack_value_per_level_in_percent = 12 [default = 0];
+        optional float reference_health_value_base = 13 [default = 0];
+        optional float reference_health_value_per_level_in_percent = 14 [default = 0];
+        optional float shop_full_refresh_cycle_time_in_sec = 15 [default = 0];
+        optional Requirement reroll_crafting_reqirement = 16;
+        optional int32 max_birds_in_battle = 17 [default = 0];
+        optional int32 level_substraction_for_missing_bird_on_difficulty_calculation = 18 [default = 0];
+        optional int32 maximum_level_difference_for_difficulty_calculation = 19 [default = 0];
+        optional int32 bird_level_weight_for_difficulty_calculation = 20 [default = 0];
+        optional uint32 time_golden_pig_spawn = 21;
+        optional uint32 time_golden_pig_only_client_if_failed_respawn = 22;
+        optional uint32 time_for_get_friend_bir = 23;
+        optional Requirement mighty_eagle_bird_reqirement = 24;
+        optional Requirement revive_birds_requirement = 25;
+        optional uint32 time_for_next_class_upgrade = 26;
+        optional Requirement next_class_skip_requirement = 27;
+        repeated float standard_dice_weights = 28 [packed = false];
+        repeated float gold_dice_weights = 29 [packed = false];
+        repeated float crystal_dice_weights = 30 [packed = false];
+        optional uint32 tip_of_the_day_count = 31;
+        optional int32 resource_spawn_amount_per_node = 32 [default = 0];
+        optional int32 maximum_spawnable_nodes = 33 [default = 0];
+        optional Requirement dungeon_skip_requirement = 34;
+        optional int32 gacha_uses_from_high_offer = 35 [default = 0];
+        optional string default_global_difficulty_balancing = 36;
+        map<int32, int32> ad_cooldown_balancing = 37;
+        map<string, uint32> sponsored_ad_cooldown_balancing = 38;
+        optional string sponsored_ad_potion_type = 39;
+        optional string sponsored_ad_buff_name = 40;
+        optional string daily_hotspot_name_id = 41;
+        optional int32 daily_chain_length = 42 [default = 0];
+        optional bool is_lime_green = 43 [default = false];
+        optional int32 lime_green_value = 44 [default = 0];
+        optional int32 rested_bonus_time = 45 [default = 0];
+        optional bool rested_bonus_active = 46 [default = false];
+        optional uint32 rainbow_riot_time = 47;
+        optional int32 gacha_preview_amount = 48 [default = 0];
+        optional float gacha_preview_percent_standard = 49 [default = 0];
+        optional float gacha_preview_percent_riot = 50 [default = 0];
+        optional float gacha_preview_percent_set = 51 [default = 0];
+        repeated LevelRangeValueTable level_rubber_band_tables = 52;
+        repeated int32 daily_chain_additional_bonus_per_day = 53 [packed = false];
+        optional string daily_chain_header_locale_id = 54;
+        optional uint32 daily_chain_timer_until_timestamp = 55;
+        optional int32 global_event_discount = 56 [default = 0];
+        repeated int32 mastery_from_experience_multiplier = 57 [packed = false];
+        repeated int32 class_upgrade_to_mastery_mapping = 58 [packed = false];
+        optional float all_birds_mastery_chance = 59 [default = 0];
+        optional float single_bird_mastery_chance = 60 [default = 0];
+        map<string, int32> item_max_caps = 61;
+        optional float energy_refresh_time_in_seconds = 62 [default = 0];
+        optional float mastery_chance_plus = 63 [default = 0];
+        optional float mastery_chance_bonus_cap = 64 [default = 0];
+        repeated float dojo_offer_discount = 65 [packed = false];
+        repeated int32 dojo_offer_discount_thresholds = 66 [packed = false];
+        map<string, int32> chronicle_cave_daily_treasure_loot = 67;
+        optional uint32 time_chronicle_cave_treasure_spawn = 68;
+        map<string, int32> daily_event_ad_loot = 69;
+        optional uint32 time_daily_event_popup_spawn = 70;
+        optional int32 pvp_gacha_uses_from_high_offer = 71 [default = 0];
+        optional float cost_to_scrap_loot_rate_set = 72 [default = 0];
+        optional Requirement revive_single_birds_requirement = 73;
+        optional int32 multi_craft_amount = 74 [default = 0];
+        optional Requirement reroll_multi_crafting_reqirement = 75;
+        optional float coin_flip_chance_change = 76 [default = 0];
+        optional float coin_flip_chance_max_change = 77 [default = 0];
+        optional bool use_golden_pig_cloud_battle = 78 [default = false];
+        optional int32 time_golden_pig_respawn_random_offset = 79 [default = 0];
+        optional int32 time_golden_pig_move_on = 80 [default = 0];
+        optional int32 multi_gacha_amount = 81 [default = 0];
+        optional int32 gacha_uses_from_normal_offer = 82 [default = 0];
+        optional int32 pvp_gacha_uses_from_normal_offer = 83 [default = 0];
+        optional int32 rainbow_riot1_multi = 84;
+        optional int32 rainbow_riot2_multi = 85;
+        optional int32 gacha_video_timespan = 86 [default = 0];
+        optional float golden_anvil_bonus = 87 [default = 0];
+        optional float diamond_anvil_bonus = 88 [default = 0];
+        optional bool enable_cross_promo_button = 89 [default = false];
+        optional float chance_to_display_stamina_video = 90 [default = 0];
+        optional int32 rate_app_abort_cooldown = 91 [default = 0];
+        optional int32 hp_chunks_lowest = 92 [default = 0];
+        optional int32 hp_chunks_highest = 93 [default = 0];
+        optional int32 max_hp_chunks = 94 [default = 0];
+        optional float hp_chunk_steps = 95 [default = 0];
+        repeated int32 notification_popup_cooldowns = 96 [packed = false];
+        optional bool enable_friend_leaderboards = 97 [default = false];
+        optional float bonus_percent_by_boss_reward_video = 98 [default = 0];
+        optional int32 pvp_max_powerlevel_diff = 99 [default = 0];
+        optional bool one_world_boss = 100 [default = false];
+        optional Requirement reroll_pvp_objectives_requirement = 101;
+        optional int32 objectives_video_timespan = 102 [default = 0];
+        optional Requirement reroll_chest_requirement = 103;
+        optional int32 max_preview_pigs_in_bps = 104 [default = 0];
+    }
+
+    repeated WorldBalancingData world_balancing_data = 1;
+}
+
+message ShopOfferBalancingData {
+    message ShopOfferData {
+        enum RelativeLevelType {
+            EXACT_LEVEL = 0;
+            RELATIVE_TO_PLAYER = 1;
+            PLAYER_LEVEL_STEP = 2;
+        }
+
+        optional string name_id = 1;
+        map<string, int32> offer_contents = 2;
+        repeated Requirement buy_requirements = 3;
+        repeated Requirement show_requirements = 4;
+        optional int32 sort_priority = 5 [default = 0];
+        optional int32 level = 6 [default = 0];
+        optional string category = 7;
+        optional string asset_id = 8;
+        optional int32 slot_id = 9 [default = 0];
+        optional string locale_id = 10;
+        optional RelativeLevelType level_type = 11;
+        repeated Requirement buy_requirements_scaling = 12;
+        repeated Requirement show_requirements_scaling = 13;
+        optional bool managed_external = 14 [default = false];
+        optional int32 level_additional = 15 [default = 0];
+        optional int32 discount_price = 16 [default = 0];
+        repeated Requirement discount_requirements = 17;
+        optional int32 discount_cooldown = 18 [default = 0];
+        optional int32 discount_duration = 19 [default = 0];
+        optional bool unique_offer = 20 [default = false];
+    }
+
+    repeated ShopOfferData shop_offer_data = 1;
+}
+
+message GameConstantsBalancingData {
+    message GameConstantsData {
+        optional string name_id = 1;
+        optional string string_value = 2;
+        optional float float_value = 3 [default = 0];
+        optional Requirement requirement_value = 4;
+        repeated float floatlist_value = 5 [packed = false];
+        optional bool bool_value = 6 [default = false];
+    }
+
+    repeated GameConstantsData game_constants_data = 1;
+}
+
+message SetFusionBalancingData {
+    message SetFusionData {
+        optional string name_id = 1;
+        optional float chance_with3_different = 2;
+        optional float chance_with2_same_on2 = 3;
+        optional float chance_with2_same_on1 = 4;
+        optional float chance_with3_same = 5;
+        optional float banner_chance_with3_same = 6;
+        optional float banner_chance_with2_same_on2 = 7;
+        repeated Requirement buy_requirements = 8;
+        repeated Requirement rerollcost_base = 9;
+        optional float rerollcost_increase = 10 [default = 0];
+        optional float rerollcost_max = 11 [default = 0];
+        optional float ancient_chance = 12 [default = 0];
+        optional float ancient_chance_reroll_increase = 13 [default = 0];
+        optional float ancient_chance_reroll_max = 14 [default = 0];
+        optional int32 ancient_item_ench_level = 15 [default = 0];
+        optional float increase_ancient_chance_per_ancient_item = 16 [default = 0];
+        repeated Requirement banner_fusion_buy_requirements = 17;
+        repeated Requirement reroll_banner_cost_base = 18;
+        optional float reroll_banner_cost_increase = 19 [default = 0];
+        optional float reroll_banner_cost_max = 20 [default = 0];
+    }
+
+    repeated SetFusionData set_fusion_data = 1;
+}
+
+message SplashScreenBalancingData {
+    message SplashScreenData {
+        optional string name_id = 1;
+        optional uint32 start_timestamp = 2;
+        optional uint32 end_timestamp = 3;
+    }
+
+    repeated SplashScreenData splash_screen_data = 1;
+}
+
+message ClassSkinBalancingData {
+    message ClassSkinData {
+        optional string name_id = 1;
+        optional string original_class = 2;
+        optional string asset_base_id = 3;
+        optional string loca_base_id = 4;
+        optional int32 sort_priority = 5 [default = 0];
+        optional float bonus_hp = 6 [default = 0];
+        optional float bonus_damage = 7 [default = 0];
+        optional InventoryItemType item_type = 8 [default = INVENTORY_ITEM_TYPE_NONE];
+        optional bool show_preview = 9 [default = false];
+        optional bool use_in_pvp_fallback = 10 [default = false];
+        optional string passive_skill_name_id = 11;
+        optional bool part_of_sale_bundles = 12 [default = false];
+    }
+
+    repeated ClassSkinData class_skin_data = 1;
+}
+
+message SerializedBalancingDataContainer {
+    map<string, bytes> all_balancing_data = 1;
+    optional string version = 2;
+}

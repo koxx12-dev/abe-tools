@@ -1,0 +1,3 @@
+[workspace]
+resolver = "2"
+members = ["libs/epic_balance", "libs/epic_locale","libs/epic_prefs","tools/multitool-cli", "napi/epic-prefs"]

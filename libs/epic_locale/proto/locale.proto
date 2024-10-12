@@ -1,0 +1,27 @@
+syntax = "proto2";
+
+package abepic.locale;
+
+message ChineseSimplifiedLocaleBalancingData {}
+
+message ChineseTraditionalLocaleBalancingData {}
+
+message EnglishLocaleBalancingData {}
+
+message GermanLocaleBalancingData {}
+
+message LocaleBalancingDataBase {
+  optional string name_id = 1;
+  optional string translated_text = 2;
+  oneof subtype {
+    GermanLocaleBalancingData german_locale_balancing_data = 91;
+    EnglishLocaleBalancingData english_locale_balancing_data = 92;
+    ChineseSimplifiedLocaleBalancingData chinese_simplified_locale_balancing_data = 93;
+    ChineseTraditionalLocaleBalancingData chinese_traditional_locale_balancing_data = 94;
+  }
+}
+
+message SerializedLocalizedTexts {
+  optional string language_id = 1;
+  repeated LocaleBalancingDataBase texts = 2;
+}

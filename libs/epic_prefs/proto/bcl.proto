@@ -1,0 +1,31 @@
+//containts mostly protobuf-net types, as abe uses Compat Level 200
+syntax = "proto2";
+
+package abepic.bcl;
+
+message DateTime {
+    enum TimeSpanScale {
+        DAYS = 0;
+        HOURS = 1;
+        MINUTES = 2;
+        SECONDS = 3;
+        MILLISECONDS = 4;
+        TICKS = 5;
+
+        MINMAX = 15; // dubious
+    }
+
+    enum DateTimeKind
+    {
+        // The time represented is not specified as either local time or Coordinated Universal Time (UTC).
+        UNSPECIFIED = 0;
+        // The time represented is UTC.
+        UTC = 1;
+        // The time represented is local time.
+        LOCAL = 2;
+    }
+
+    required sint64 value = 1; // the offset (in units of the selected scale) from 1970/01/01
+    optional TimeSpanScale scale = 2 [default = DAYS]; // the scale of the timespan [default = DAYS]
+    optional DateTimeKind kind = 3 [default = UNSPECIFIED];  // the kind of date/time being represented [default = UNSPECIFIED]
+}

@@ -1,0 +1,16 @@
+[package]
+name = "epic_balance"
+edition = "2021"
+version = "0.1.0"
+
+[dependencies]
+prost = "0.13.3"
+serde = "1.0.210"
+serde_json = "1.0.128"
+pbjson = "0.7.0"
+flate2 = "1.0.34"
+anyhow = "1.0.82"
+
+[build-dependencies]
+prost-build = "0.13.3"
+pbjson-build = "0.7.0"

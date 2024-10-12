@@ -1,0 +1,629 @@
+syntax = "proto2";
+
+import "bcl.proto";
+
+package abepic.prefs;
+
+message String_StringList_KeyValuePair {
+    optional string key = 1;
+    repeated string value = 2;
+}
+
+message String_UInt32List_KeyValuePair {
+    optional string key = 1;
+    repeated uint32 value = 2;
+}
+message String_UInt32_KeyValuePair {
+    optional string key = 1;
+    optional uint32 value = 2 [default = 0];
+}
+
+message HotspotData {
+    enum HotspotUnlockState {
+        HOTSPOT_UNLOCK_STATE_UNKNOWN = 0;
+        HOTSPOT_UNLOCK_STATE_HIDDEN = 1;
+        HOTSPOT_UNLOCK_STATE_ACTIVE = 2;
+        HOTSPOT_UNLOCK_STATE_RESOLVED_NEW = 10;
+        HOTSPOT_UNLOCK_STATE_RESOLVED = 11;
+        HOTSPOT_UNLOCK_STATE_RESOLVED_BETTER = 12;
+    }
+
+    enum HotspotAnimationState {
+        HOTSPOT_ANIMATION_STATE_NONE = 0;
+        HOTSPOT_ANIMATION_STATE_INACTIVE = 5;
+        HOTSPOT_ANIMATION_STATE_ACTIVE = 10;
+        HOTSPOT_ANIMATION_STATE_OPEN = 15;
+    }
+
+    optional string name_id = 1;
+    optional HotspotUnlockState unlock_state = 2 [default = HOTSPOT_UNLOCK_STATE_UNKNOWN];
+    optional int32 star_count = 3 [default = 0];
+    optional abepic.bcl.DateTime last_visit_date_time = 4;
+    optional bool looted = 5 [default = false];
+    optional int32 score = 6 [default = 0];
+    optional int32 random_seed = 7 [default = 0];
+    optional HotspotAnimationState animation_state = 8 [default = HOTSPOT_ANIMATION_STATE_NONE];
+    optional int32 completion_player_level = 9 [default = 0];
+}
+
+message BasicItemData {
+    optional string name_id = 1;
+    optional int32 level = 2 [default = 0];
+    optional int32 value = 3 [default = 0];
+    optional int32 quality = 4 [default = 0];
+    optional bool is_new = 5 [default = false];
+    optional int32 is_new_in_shop = 6 [default = 0];
+}
+
+message WorldData {
+    optional string name_id = 1;
+    repeated HotspotData hot_spot_instances = 2;
+    optional HotspotData current_hot_spot_instance = 3;
+    optional HotspotData daily_hotspot_instance = 4;
+}
+
+message ClassItemData {
+    optional string name_id = 1;
+    optional int32 level = 2 [default = 0];
+    optional int32 value = 3 [default = 0];
+    optional int32 quality = 4 [default = 0];
+    optional bool is_new = 5 [default = false];
+    optional float experience_for_next_level = 6 [default = 0];
+}
+
+enum EquipmentSource {
+    EQUIPMENT_SOURCE_LOOT = 0;
+    EQUIPMENT_SOURCE_CRAFTING = 1;
+    EQUIPMENT_SOURCE_GATCHA = 2;
+    EQUIPMENT_SOURCE_SET_ITEM = 3;
+    EQUIPMENT_SOURCE_LOOT_BIRD = 4;
+    EQUIPMENT_SOURCE_DAILY_GIFT = 5;
+}
+
+message EquipmentData {
+    optional string name_id = 1;
+    optional int32 level = 2 [default = 0];
+    optional int32 value = 3 [default = 0];
+    optional int32 quality = 4 [default = 0];
+    map<string, int32> scrap_loot = 5;
+    optional bool is_new = 6 [default = false];
+    optional EquipmentSource item_source = 7;
+    optional int32 enchantment_level = 8 [default = 0];
+    optional float enchantment_progress = 9 [default = 0];
+    optional bool is_ancient = 10 [default = false];
+}
+
+message CraftingItemData {
+    optional string name_id = 1;
+    optional int32 level = 2 [default = 0];
+    optional int32 value = 3 [default = 0];
+    optional int32 quality = 4 [default = 0];
+    optional bool is_new = 5 [default = false];
+}
+
+message ConsumableItemData {
+    optional string name_id = 1;
+    optional int32 level = 2 [default = 0];
+    optional int32 value = 3 [default = 0];
+    optional int32 quality = 4 [default = 0];
+    optional bool is_new = 5 [default = false];
+}
+
+message CraftingRecipeData {
+    optional string name_id = 1;
+    optional int32 level = 2 [default = 0];
+    optional int32 value = 3 [default = 0];
+    optional int32 quality = 4 [default = 0];
+    optional bool is_new = 5 [default = false];
+    optional bool is_new_in_shop = 6 [default = false];
+}
+
+message EventItemData {
+    optional string name_id = 1;
+    optional int32 level = 2 [default = 0];
+    optional int32 value = 3 [default = 0];
+    optional int32 quality = 4 [default = 0];
+    optional bool is_new = 5 [default = false];
+    optional string position_id = 6;
+}
+
+message MasteryItemData {
+    optional string name_id = 1;
+    optional int32 level = 2 [default = 0];
+    optional int32 value = 3 [default = 0];
+    optional int32 quality = 4 [default = 0];
+    optional bool is_new = 5 [default = false];
+}
+
+message BannerItemData {
+    optional string name_id = 1;
+    optional int32 level = 2 [default = 0];
+    optional int32 value = 3 [default = 0];
+    optional int32 quality = 4 [default = 0];
+    optional bool is_new = 5 [default = false];
+    optional EquipmentSource item_source = 6;
+    optional int32 enchantment_level = 7 [default = 0];
+    optional float enchantment_progress = 8 [default = 0];
+    optional int32 stars = 9 [default = 0];
+    optional bool is_ancient = 10 [default = false];
+}
+
+message SkinItemData {
+    optional string name_id = 1;
+    optional int32 level = 2 [default = 0];
+    optional int32 value = 3 [default = 0];
+    optional int32 quality = 4 [default = 0];
+    optional bool is_new = 5 [default = false];
+}
+
+message InventoryData {
+    optional string name_id = 1;
+    repeated BasicItemData story_items = 2;
+    repeated BasicItemData player_stats = 3;
+    repeated ClassItemData class_items = 4;
+    repeated EquipmentData main_hand_items = 5;
+    repeated EquipmentData off_hand_items = 6;
+    repeated CraftingItemData crafting_resource_items = 7;
+    repeated CraftingItemData crafting_ingredient_items = 8;
+    repeated ConsumableItemData consumable_items = 9;
+    repeated CraftingRecipeData crafting_recipes_items = 10;
+    map<string, int32> delayed_rewards = 11;
+    repeated EventItemData event_items = 12;
+    repeated MasteryItemData mastery_items = 13;
+    repeated BannerItemData banner_items = 14;
+    repeated BasicItemData trophy_items = 15;
+    repeated BasicItemData collection_components = 16;
+    repeated SkinItemData skin_items = 17;
+}
+
+message BirdData {
+    optional string name_id = 1;
+    optional int32 level = 2 [default = 0];
+    optional InventoryData inventory = 3;
+    optional bool is_unavaliable = 4 [default = false];
+}
+
+message ChronicleCaveData {
+    optional string name_id = 1;
+    repeated ChronicleCaveFloorData cronicle_cave_floors = 2;
+    optional int32 current_floor_index = 3 [default = 0];
+    optional HotspotData current_hot_spot_instance = 4;
+    optional int32 current_bird_floor_index = 5 [default = 0];
+    optional uint32 visited_daily_treasure_timestamp = 6 [default = 0];
+}
+
+message ChronicleCaveFloorData {
+    optional string name_id = 1;
+    optional int32 floor_id = 2 [default = 0];
+    repeated HotspotData hot_spot_instances = 3;
+    optional int32 floor_base_level = 4 [default = 0];
+}
+
+message BannerData {
+    optional string name_id = 1;
+    optional int32 level = 2 [default = 0];
+    optional InventoryData inventory = 3;
+}
+
+message TrophyData {
+    optional string name_id = 1;
+    optional int32 seasonid = 2 [default = 0];
+    optional int32 finished_league_id = 3 [default = 0];
+}
+
+message WorldBossTeamData {
+    optional string name_id = 1;
+    optional int32 team_color = 2 [default = 0];
+    repeated float team_player_seeds = 3;
+    optional float score_penalty = 4 [default = 0];
+    repeated string team_player_ids = 5;
+    optional uint32 last_processed_boss_defeat = 6 [default = 0];
+}
+
+enum EventCampaignRewardStatus {
+    EVENT_CAMPAIGN_REWARD_STATUS_LOCKED = 0;
+    EVENT_CAMPAIGN_REWARD_STATUS_UNLOCKED_NEW = 1;
+    EVENT_CAMPAIGN_REWARD_STATUS_UNLOCKED = 2;
+    EVENT_CAMPAIGN_REWARD_STATUS_UNLOCKED_NEW_FALLBACK = 3;
+    EVENT_CAMPAIGN_REWARD_STATUS_UNLOCKED_FALLBACK = 4;
+    EVENT_CAMPAIGN_REWARD_STATUS_CHEST_CLAIMED = 5;
+}
+
+message WorldEventBossData {
+    optional string name_id = 1;
+    repeated uint32 defeated_timestamp = 2;
+    optional WorldBossTeamData team1 = 3;
+    optional WorldBossTeamData team2 = 4;
+    optional int32 own_team_id = 5 [default = 0];
+    optional int32 number_of_attacks = 6 [default = 0];
+    optional int32 death_count = 7 [default = 0];
+    optional int32 victory_count = 8 [default = 0];
+    optional EventCampaignRewardStatus reward_status = 9;
+    optional float last_displayed_boss_health = 10 [default = 0];
+    optional String_UInt32_KeyValuePair defeats_to_process = 11;
+}
+
+message LocationProgressEntry {
+    enum LocationType {
+        LOCATION_TYPE_WORLD = 0;
+        LOCATION_TYPE_CHRONICLE_CAVE = 1;
+        LOCATION_TYPE_EVENT_CAMPAIGN = 2;
+    }
+
+    optional LocationType key = 1;
+    optional int32 value = 2 [default = 0];
+}
+
+message PublicPlayerData {
+    optional string social_id = 1;
+    optional InventoryData inventory = 2;
+    repeated BirdData birds = 3;
+    optional ChronicleCaveData chronicle_cave = 4;
+    repeated LocationProgressEntry location_progress = 5;
+    optional uint32 last_save_time = 6 [default = 0];
+    optional int32 level = 7 [default = 0];
+    optional string social_player_name = 8;
+    optional string social_avatar_url = 9;
+    optional string event_player_name = 10;
+    optional BannerData banner = 11;
+    repeated int32 pvp_indices = 12;
+    optional int32 pvp_rank = 13 [default = 0];
+    optional int32 league = 14 [default = 0];
+    optional TrophyData trophy = 15;
+    optional WorldEventBossData world_boss = 16;
+    optional float random_decision_seed = 17 [default = 0];
+}
+
+message FriendData {
+    optional string first_name = 1;
+    optional string id = 2;
+    optional string picture_url = 3;
+    optional bool is_silhouette_picture = 4 [default = false];
+    optional bool has_bonus = 5 [default = false];
+    optional int32 level = 6 [default = 0];
+    optional bool is_npc = 7 [default = false];
+    optional bool is_installed = 8 [default = false];
+    optional bool needs_payment = 9 [default = false];
+    optional int32 pvp_rank = 10 [default = 0];
+    optional int32 pvp_league = 11 [default = 0];
+}
+
+message MessageDataIncoming {
+    enum MessageType {
+        MESSAGE_TYPE_NONE = 0;
+        MESSAGE_TYPE_REQUEST_INVITATION = 1;
+        MESSAGE_TYPE_REQUEST_FRIENDSHIP_ESSENCE = 2;
+        MESSAGE_TYPE_REQUEST_FRIENDSHIP_GATE = 3;
+        MESSAGE_TYPE_RESPONSE_FRIENDSHIP_ESSENCE = 4;
+        MESSAGE_TYPE_RESPONSE_FRIENDSHIP_GATE = 5;
+        MESSAGE_TYPE_RESPONSE_BIRD_BORROW = 6;
+        MESSAGE_TYPE_RESPONSE_INVITATION = 7;
+        MESSAGE_TYPE_RESPONSE_SPECIAL_UNLOCK = 8;
+        MESSAGE_TYPE_RESPONSE_GACHA_USE = 9;
+        MESSAGE_TYPE_CUSTOM_GAME_DATA = 10;
+        MESSAGE_TYPE_DEFEATED_FRIEND = 11;
+        MESSAGE_TYPE_DEFEATED_BY_FRIEND = 12;
+        MESSAGE_TYPE_RESPONSE_PVP_GACHA_USE = 13;
+        MESSAGE_TYPE_WON_IN_PVP_CHALLENGE = 14;
+    }
+
+    optional string id = 1;
+    optional MessageType message_type = 2 [default = MESSAGE_TYPE_NONE];
+    optional FriendData sender = 3;
+    optional uint32 received_at = 4 [default = 0];
+    optional uint32 used_at = 5 [default = 0];
+    optional uint32 viewed_at = 6 [default = 0];
+    optional uint32 sent_at = 7 [default = 0];
+    optional string parameter1 = 8;
+    optional int32 parameter2 = 9;
+}
+
+message SocialEnvironmentData {
+    optional string name_id = 1;
+    optional string social_id = 2;
+    repeated string invited_friend_ids = 3;
+    repeated string accepted_friend_ids = 4;
+    map<string, uint32> get_bird_cooldowns = 5;
+    map<string, uint32> get_free_gacha_roll_cooldowns = 6;
+    repeated string free_gacha_roll_friend_ids = 7;
+    optional uint32 last_gacha_free_roll_spawn = 8 [default = 0];
+    repeated PublicPlayerData player_instances = 9;
+    optional String_StringList_KeyValuePair friend_ship_gate_unlocks = 10;
+    repeated MessageDataIncoming messages = 11;
+    repeated LocationProgressEntry location_progress = 12;
+    optional string social_picture_url = 13;
+    optional string social_player_name = 14;
+    optional string id_login_email = 15;
+    optional string id_password = 16;
+    optional String_StringList_KeyValuePair new_friend_ship_gate_unlocks = 17;
+    repeated string pending_friend_ids = 18;
+    optional string last_messaging_cursor = 19;
+    map<string, uint32> friend_ship_gate_help_cooldowns = 20;
+    optional uint32 friend_ship_essence_cooldown = 21 [default = 0];
+    optional bool fetched_messages_once = 22 [default = false];
+    optional uint32 first_message_fetch_time = 23 [default = 0];
+    optional uint32 friend_ship_essence_message_cap_reset_time = 24 [default = 0];
+    optional int32 friend_ship_essence_message_cap_count = 25 [default = 0];
+    repeated MessageDataIncoming resend_messages = 26;
+    optional string matchmaking_player_name = 27;
+    optional string event_player_name = 28;
+    optional uint32 mccool_visits_gacha_timestamp = 29 [default = 0];
+    optional uint32 mccool_lends_bird_timestamp = 30 [default = 0];
+    optional uint32 mccool_sends_essence_timestamp = 31 [default = 0];
+    repeated string free_pvp_gacha_roll_friend_ids = 32;
+    map<string, uint32> get_free_pvp_gacha_roll_cooldowns = 33;
+    optional uint32 last_pvp_gacha_free_roll_spawn = 34 [default = 0];
+    optional uint32 mccool_visits_pvp_gacha_timestamp = 35 [default = 0];
+    optional int32 friend_ship_essence_message_by_bird_cap_count = 36 [default = 0];
+}
+
+message CustomMessage {
+    optional string key = 1;
+    optional string name_id = 2;
+}
+
+message EventData {
+    optional string name_id = 1;
+}
+
+enum EventManagerState {
+    EVENT_MANAGER_STATE_TEASING = 0;
+    EVENT_MANAGER_STATE_INVALID = -1;
+    EVENT_MANAGER_STATE_RUNNING = 1;
+    EVENT_MANAGER_STATE_FINISHED = 2;
+    EVENT_MANAGER_STATE_FINISHED_WITHOUT_POINTS = 3;
+    EVENT_MANAGER_STATE_FINISHED_AND_RESULT_IS_VALID = 4;
+    EVENT_MANAGER_STATE_FINISHED_AND_CONFIRMED = 5;
+}
+
+message EventCampaignData {
+    optional string name_id = 1;
+    optional HotspotData current_hot_spot_instance = 2;
+    repeated HotspotData hot_spot_instances = 3;
+    optional EventCampaignRewardStatus reward_status = 4;
+}
+
+message BossData {
+    optional string name_id = 1;
+    optional int32 level = 2 [default = 0];
+    optional InventoryData inventory = 3;
+    optional bool is_unavaliable = 4 [default = false];
+    optional string event_node_id = 5;
+    optional int32 last_position_swap_on_defeat = 6 [default = 0];
+}
+
+message EventManagerData {
+    optional string name_id = 1;
+    optional EventData curent_event_instance = 2;
+    optional uint32 current_score = 3 [default = 0];
+    optional EventManagerState current_state = 4;
+    optional bool matchmaking_score_submitted = 5 [default = false];
+    repeated string current_opponents = 6;
+    optional uint32 matchmaking_score = 7 [default = 0];
+    optional int32 matchmaking_score_offset = 8 [default = 0];
+    optional int32 cached_rolled_result_wheel_index = 9 [default = 0];
+    optional uint32 last_encounter_spawn_time = 10 [default = 0];
+    optional uint32 watched_daily_event_reward_timestamp = 11 [default = 0];
+    optional uint32 last_collectible_spawn_time = 12 [default = 0];
+    optional EventCampaignData event_campaign_data = 13;
+    optional BossData event_boss_data = 14;
+    optional bool popup_teaser_shown = 15 [default = false];
+    optional string leaderboard_id = 16;
+    repeated string cheating_opponents = 17;
+    optional int32 starting_player_level = 18 [default = 0];
+    optional string confirmed_chest_loot_id = 19;
+}
+
+
+
+message PvPTurnManagerData {
+    optional string name_id = 1;
+    optional int32 current_season = 2 [default = 0];
+    optional uint32 current_score = 3 [default = 0];
+    optional EventManagerState current_state = 4 [default = EVENT_MANAGER_STATE_TEASING];
+    optional bool matchmaking_score_submitted = 5 [default = false];
+    repeated string current_opponents = 6;
+    optional uint32 matchmaking_score = 7 [default = 0];
+    optional int32 matchmaking_score_offset = 8 [default = 0];
+    optional int32 cached_rolled_result_wheel_index = 9 [default = 0];
+    optional uint32 last_used_pvp_energy = 10 [default = 0];
+    optional int32 current_matching_difficulty = 11 [default = 0];
+    optional string leaderboard_id = 12;
+    repeated string cheating_opponents = 13;
+    optional int32 starting_player_level = 14 [default = 0];
+}
+
+message PvPSeasonManagerData {
+    enum PvPSeasonState {
+        PVP_SEASON_STATE_PENDING = 0;
+        PVP_SEASON_STATE_INVALID = -1;
+        PVP_SEASON_STATE_RUNNING = 1;
+        PVP_SEASON_STATE_FINISHED = 2;
+        PVP_SEASON_STATE_FINISHED_WITHOUT_POINTS = 3;
+        PVP_SEASON_STATE_FINISHED_AND_RESULT_IS_VALID = 4;
+        PVP_SEASON_STATE_FINISHED_AND_CONFIRMED = 5;
+    }
+
+    optional string name_id = 1;
+    optional int32 current_league = 2 [default = 0];
+    optional int32 current_season = 3 [default = 0];
+    optional PvPSeasonState current_season_state = 4 [default = PVP_SEASON_STATE_PENDING];
+    optional PvPTurnManagerData current_season_turn = 5;
+    optional bool has_pending_demotion_popup = 6 [default = false];
+    optional int32 current_rank = 7 [default = 0];
+    optional int32 highest_league_record = 8 [default = 0];
+}
+
+message PvPObjecitveData {
+    optional string name_id = 1;
+    optional int32 progress = 2 [default = 0];
+    optional bool solved = 3 [default = false];
+    optional string difficulty = 4;
+    repeated string progress_list = 5;
+}
+
+message AchievementData {
+    optional string name_id = 1;
+    optional int32 pvpfights_won = 2 [default = 0];
+    optional int32 max_league_reached = 3 [default = 0];
+    optional int32 objectives_completed = 4 [default = 0];
+    repeated string defeated_classes = 5;
+    repeated string played_classes = 6;
+    optional bool banner_set_completed = 7 [default = false];
+    optional bool pvpunlocked = 8 [default = false];
+    optional bool reached_top_spot_any_league = 9 [default = false];
+    optional bool event_completed_zombie = 10 [default = false];
+    optional bool event_completed_pirate = 11 [default = false];
+    optional bool event_completed_ninja = 12 [default = false];
+    optional bool reached_top_spot_event = 13 [default = false];
+    optional bool reached_top_spot_diamond_league = 14 [default = false];
+    optional bool pvpfights_won_achieved = 15 [default = false];
+    optional bool objectives_completed_achieved = 16 [default = false];
+    optional bool chronicle_caves_completed_achieved = 17 [default = false];
+}
+
+message PlayerData {
+       optional string name_id = 1;
+       optional int32 level = 2 [default = 0];
+       optional WorldData world = 3;
+       optional InventoryData inventory = 4;
+       repeated BirdData birds = 5;
+       optional string parser_version = 6;
+       optional uint32 last_save_timestamp = 7 [default = 0];
+       optional string device_name = 8;
+       optional float experience = 9 [default = 0];
+       map<string, int32> tutorial_tracks = 10;
+       optional string golden_pig_hotspot_id = 11;
+       optional uint32 last_golden_pig_spawn_time = 12 [default = 0];
+       optional uint32 last_golden_pig_fail_time = 13 [default = 0];
+       optional bool is_music_muted = 14 [default = false];
+       optional bool is_sound_muted = 15 [default = false];
+       repeated string current_class_upgrade_shop_offers = 16;
+       repeated string next_class_upgrade_shop_offers = 17;
+       optional uint32 last_class_switch_time = 18 [default = 0];
+       repeated int32 selected_bird_indices = 19;
+       repeated string pending_feature_unlocks = 20;
+       optional ChronicleCaveData chronicle_cave = 21;
+       optional string identity_access_token = 22;
+       optional SocialEnvironmentData social_environment = 23;
+       map<string, abepic.bcl.DateTime> current_special_shop_offers = 24;
+       optional string client_version = 25;
+       optional string user_token = 26;
+       optional uint32 last_resource_node_spawn_time = 27 [default = 0];
+       repeated string temporary_open_hotspots = 28;
+       map<string, bool> shop_offers_new = 29;
+       repeated string dungeons_already_played_today = 30;
+       optional uint32 skynest_analytics_session_id = 31 [default = 0];
+       optional int32 notification_usage_state = 32 [default = 0];
+       optional bool is_user_converted = 33 [default = false];
+       optional uint32 last_inventory_balance_time = 34 [default = 0];
+       optional bool has_new_on_worlmap = 35 [default = false];
+       optional uint32 creation_date = 36 [default = 0];
+       optional uint32 last_ad_shown_time = 37 [default = 0];
+       repeated string unique_special_shop_offers = 38;
+       map<string, uint32> sponsored_ad_uses = 39;
+       optional string current_sponsored_buff = 40;
+       optional bool rovio_id_register_once = 41 [default = false];
+       optional uint32 last_golden_pig_defeated_time = 42 [default = 0];
+       optional uint32 rested_bonus_last_pause_time_start = 43 [default = 0];
+       optional uint32 rested_bonus_pause_time_sum = 44 [default = 0];
+       optional int32 rested_bonus_battles = 45 [default = 0];
+       optional bool rested_bonus_ui_showen_ones = 46 [default = false];
+       optional bool rested_bonus_exhausted_showen_ones = 47 [default = false];
+       repeated CustomMessage acknowledged_custom_messages = 48;
+       optional uint32 last_rainbow_riot_time = 49 [default = 0];
+       optional EventManagerData current_event_manager = 50;
+       optional EventManagerData last_finished_event_manager = 51;
+       optional int32 activity_indicator = 52 [default = 0];
+       repeated int32 event_finish_statistic = 53;
+       map<string, int32> pending_class_rank_ups = 54;
+       optional uint32 last_energy_add_time = 55 [default = 0];
+       optional int32 dojo_offers_bought = 56 [default = 0];
+       optional bool rested_bonus_popup_displayed = 57 [default = false];
+       optional BannerData pvp_banner = 58;
+       optional PvPSeasonManagerData pvp_season_manager = 59;
+       repeated PvPObjecitveData pvp_objectives = 60;
+       repeated int32 selected_pvp_bird_indices = 61;
+       optional bool won_avenger_by_stars = 62 [default = false];
+       optional bool has_pending_seasonend_popup = 63 [default = false];
+       optional string m_cached_season_name = 64;
+       optional int32 utc_offset = 65 [default = 0];
+       optional uint32 last_timezone_persist_timestamp = 66 [default = 0];
+       optional bool is_daylight_saving_time = 67 [default = false];
+       optional AchievementData achievement_tracking = 68;
+       optional uint32 enter_nickname_tutorial_done = 69 [default = 0];
+       optional TrophyData pvp_trophy = 70;
+       optional int32 highest_finished_league = 71 [default = 0];
+       optional int32 hard_currency_spent = 72 [default = 0];
+       map<string, int32> over_all_season_pvp_points = 73;
+       optional bool event_energy_tutorial_displayed = 74 [default = false];
+       optional uint32 pvp_tutorial_display_state = 75 [default = 0];
+       optional uint32 last_daily_gift_claimed_time = 76 [default = 0];
+       optional uint32 gifts_claimed_this_month = 77 [default = 0];
+       optional float coin_flip_lose_chance = 78 [default = 0];
+       optional int32 next_golden_pig_spawn_offset = 79 [default = 0];
+       optional bool set_info_displayed = 80 [default = false];
+       repeated string boss_intros_played = 81;
+       optional uint32 set_items_in_total = 82 [default = 0];
+       optional bool is_extra_rainbow_riot = 83 [default = false];
+       optional bool first_revive_used = 84 [default = false];
+       repeated string charity_popups_displayed = 85;
+       optional WorldEventBossData world_boss = 86;
+       optional String_UInt32List_KeyValuePair world_boss_players_attacks_timestamps = 87;
+       optional int32 unprocessed_boss_defeats = 88 [default = 0];
+       optional int32 unprocessed_boss_victories = 90 [default = 0];
+       optional bool unprocessed_boss_killing_blow = 91 [default = false];
+       optional uint32 boss_won_time = 92 [default = 0];
+       optional uint32 boss_start_time = 93 [default = 0];
+       optional float random_decision_seed = 94 [default = 0];
+       optional bool override_profile_merger = 95 [default = false];
+       optional int32 highest_power_level_ever = 96 [default = 0];
+       optional uint32 time_stamp_of_last_video_gacha = 97 [default = 0];
+       optional uint32 time_stamp_of_last_video_pvp_gacha = 98 [default = 0];
+       repeated string shown_shop_popups = 99;
+       optional string current_pvp_buff = 100;
+       map<string, abepic.bcl.DateTime> current_cooldown_offers = 101;
+       optional bool bonus_shards_gained_today = 102 [default = false];
+       map<string, string> equipped_skins = 103;
+       optional string last_rating_success_version = 104;
+       optional uint32 last_rating_fail_timestamp = 105 [default = 0];
+       optional bool lost_any_pvp_battle = 106 [default = false];
+       repeated string lastwatched_news_items = 107;
+       optional int32 experience_for_next_level = 108 [default = 0];
+       optional uint32 notification_popup_shown = 109 [default = 0];
+       optional int32 notification_popups_amount = 110 [default = 0];
+       optional bool is_new_created_account = 111 [default = false];
+       map<string, int32> collectibles_per_event = 112;
+       optional uint32 time_stamp_of_last_video_objectives = 113 [default = 0];
+       optional bool objective_video_free_refresh_used = 114 [default = false];
+       optional bool convertion_for153 = 115;
+       optional string cached_chest_reward_item = 116;
+       optional bool cinematric_intro_started = 117 [default = false];
+       map<string, abepic.bcl.DateTime> sales_history = 118;
+       map<int32, string> calendar_chest_loot_won = 119;
+       optional bool free_fusionused = 120 [default = false];
+       optional int32 daily_pvp_objectives_rerolled = 121 [default = 0];
+       optional float total_dollars_spent = 122 [default = 0];
+       map<string, int32> unresolved_hotspots_lost = 123;
+       optional uint32 time_stamp_of_last_purchase = 124 [default = 0];
+       repeated string sale_queue = 125;
+       optional uint32 time_stamp_of_last_sticky_purchase = 126 [default = 0];
+       optional String_StringList_KeyValuePair chain_purchase_history = 127;
+       optional String_UInt32_KeyValuePair last_private_sale = 128;
+       optional String_StringList_KeyValuePair cached_loot_from_purchase = 129;
+       repeated string offers_ended_without_purchase = 130;
+       repeated string offers_purchased = 131;
+       repeated string offers_ended = 132;
+       map<string, int32> treshhold_rewards_per_season_claimed = 133;
+       optional bool plays_hard_mode_boss = 134 [default = false];
+       optional bool plays_hard_mode_dungeon = 135 [default = false];
+       optional uint32 time_stamp_of_last_free_gacha = 136 [default = 0];
+       optional uint32 time_stamp_of_last_free_pvp_gacha = 137 [default = 0];
+       optional string missing_class_for_skin_popup = 138;
+       optional uint32 time_stamp_of_last_cinema_video = 139 [default = 0];
+       optional string rovio_id = 140;
+       optional uint32 time_stamp_of_last_event_point_video_boost = 141 [default = 0];
+       optional uint32 time_stamp_of_last_arena_point_video_boost = 142 [default = 0];
+       optional int32 m_cached_pvp_trophy_id = 143 [default = 0];
+       repeated string bought_infinite_offers = 144;
+}
