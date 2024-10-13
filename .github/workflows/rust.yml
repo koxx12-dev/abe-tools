@@ -36,7 +36,14 @@ jobs:
       id: changed-tools
       shell: bash
       run: |
-        CHANGED_TOOLS=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^tools/' | cut -d'/' -f2 | sort -u)
+        if [ "${{ github.event_name }}" == "pull_request" ]; then
+          BASE_SHA=${{ github.event.pull_request.base.sha }}
+          HEAD_SHA=${{ github.event.pull_request.head.sha }}
+        else
+          BASE_SHA=$(git rev-parse HEAD^)
+          HEAD_SHA=$(git rev-parse HEAD)
+        fi
+        CHANGED_TOOLS=$(git diff --name-only $BASE_SHA $HEAD_SHA | grep '^tools/' | cut -d'/' -f2 | sort -u)
         echo "Changed tools: $CHANGED_TOOLS"
         echo "changed_tools=$CHANGED_TOOLS" >> $GITHUB_OUTPUT
 
