@@ -207,7 +207,7 @@ message BannerData {
 
 message TrophyData {
     optional string name_id = 1;
-    optional int32 seasonid = 2 [default = 0];
+    optional int32 season_id = 2 [default = 0];
     optional int32 finished_league_id = 3 [default = 0];
 }
 
