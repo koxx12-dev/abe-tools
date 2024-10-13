@@ -1,0 +1,67 @@
+name: Rust Monorepo CI (Windows)
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'tools/**'
+  pull_request:
+    branches: [ main ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    if: "!contains(github.event.head_commit.message, '[SKIP CI]')"
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Cache Rust dependencies
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cargo/registry
+          ~/.cargo/git
+          target
+        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-cargo-
+
+    - name: Determine changed tools
+      id: changed-tools
+      shell: bash
+      run: |
+        CHANGED_TOOLS=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^tools/' | cut -d'/' -f2 | sort -u)
+        echo "Changed tools: $CHANGED_TOOLS"
+        echo "changed_tools=$CHANGED_TOOLS" >> $GITHUB_OUTPUT
+
+    - name: Build changed tools
+      if: steps.changed-tools.outputs.changed_tools
+      shell: bash
+      run: |
+        for tool in ${{ steps.changed-tools.outputs.changed_tools }}; do
+          echo "Building tool: $tool"
+          cargo build --release --package $tool
+        done
+
+    # - name: Run tests for changed tools
+    #   if: steps.changed-tools.outputs.changed_tools
+    #   shell: bash
+    #   run: |
+    #     for tool in ${{ steps.changed-tools.outputs.changed_tools }}; do
+    #       echo "Testing tool: $tool"
+    #       cargo test --package $tool
+    #     done
+
+    - name: Upload artifacts for changed tools
+      if: steps.changed-tools.outputs.changed_tools
+      uses: actions/upload-artifact@v3
+      with:
+        name: windows-tools
+        path: |
+          target/release/*.exe
+        if-no-files-found: error
