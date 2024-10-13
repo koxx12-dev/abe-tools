@@ -8,6 +8,8 @@ on:
       - 'tools/**'
   pull_request:
     branches: [ main ]
+    paths:
+      - 'tools/**'
 
 env:
   CARGO_TERM_COLOR: always
@@ -18,8 +20,6 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
 
     - name: Cache Rust dependencies
       uses: actions/cache@v3
@@ -32,44 +32,30 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-cargo-
 
-    - name: Determine changed tools
-      id: changed-tools
+    - name: Build all tools
       shell: bash
       run: |
-        if [ "${{ github.event_name }}" == "pull_request" ]; then
-          BASE_SHA=${{ github.event.pull_request.base.sha }}
-          HEAD_SHA=${{ github.event.pull_request.head.sha }}
-        else
-          BASE_SHA=$(git rev-parse HEAD^)
-          HEAD_SHA=$(git rev-parse HEAD)
-        fi
-        CHANGED_TOOLS=$(git diff --name-only $BASE_SHA $HEAD_SHA | grep '^tools/' | cut -d'/' -f2 | sort -u)
-        echo "Changed tools: $CHANGED_TOOLS"
-        echo "changed_tools=$CHANGED_TOOLS" >> $GITHUB_OUTPUT
-
-    - name: Build changed tools
-      if: steps.changed-tools.outputs.changed_tools
-      shell: bash
-      run: |
-        for tool in ${{ steps.changed-tools.outputs.changed_tools }}; do
+        cd tools
+        for tool in */; do
+          tool=${tool%/}
           echo "Building tool: $tool"
-          cargo build --release --package $tool
+          cargo build --package $tool
         done
 
-    # - name: Run tests for changed tools
-    #   if: steps.changed-tools.outputs.changed_tools
+    # - name: Run tests for all tools
     #   shell: bash
     #   run: |
-    #     for tool in ${{ steps.changed-tools.outputs.changed_tools }}; do
+    #     cd tools
+    #     for tool in */; do
+    #       tool=${tool%/}
     #       echo "Testing tool: $tool"
     #       cargo test --package $tool
     #     done
 
-    - name: Upload artifacts for changed tools
-      if: steps.changed-tools.outputs.changed_tools
+    - name: Upload artifacts for all tools
       uses: actions/upload-artifact@v3
       with:
         name: windows-tools
         path: |
-          target/release/*.exe
+          target/debug/*.exe
         if-no-files-found: error
