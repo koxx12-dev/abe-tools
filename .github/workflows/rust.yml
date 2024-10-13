@@ -1,6 +1,7 @@
 name: Rust Monorepo CI (Windows)
 
 on:
+  workflow_dispatch:
   push:
     branches: [ main ]
     paths:
