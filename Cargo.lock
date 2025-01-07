@@ -455,6 +455,7 @@ dependencies = [
  "epic_locale",
  "epic_prefs",
  "prost",
+ "ron",
  "serde_json",
 ]
 
