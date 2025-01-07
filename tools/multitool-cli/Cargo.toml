@@ -1,6 +1,6 @@
 [package]
 name = "multitool-cli"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 
 [[bin]]
@@ -17,7 +17,6 @@ epic_balance = { path = "../../libs/epic_balance", features = ["all"]}
 epic_prefs = { path = "../../libs/epic_prefs", features = ["all"] }
 epic_locale = { path = "../../libs/epic_locale", features = ["all"] }
 serde_json = "1.0.128"
-ron = "0.8.1"
 prost = "0.13.3"
 clap = { version = "4.5.20", features = ["derive"] }
 anyhow = "1.0.89"
