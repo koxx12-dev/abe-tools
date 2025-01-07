@@ -5,18 +5,28 @@ version = "0.1.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[features]
+default = []
+serde = ["dep:pbjson-build", "dep:pbjson", "dep:serde"]
+json = ["serde", "dep:serde_json"]
+ron = ["serde", "dep:ron"]
+all = ["json", "ron"]
+
 [dependencies]
 prost = "0.13.3"
-serde = "1.0.197"
-serde_json = "1.0.128"
-pbjson = "0.7.0"
-anyhow = "1.0.82"
+serde = { version = "1.0.212", optional = true }
+serde_json = { version = "1.0.132", optional = true }
+pbjson = { version = "0.7.0", optional = true }
+ron = { version = "0.8.1", optional = true }
+#pbjson = { path = "../../../pbjson/pbjson" }
+anyhow = "1.0.91"
 base64 = "0.22.1"
 url-escape = "0.1.1"
 chrono = "0.4.38"
-yaserde = "0.11.1"
-yaserde_derive = "0.11.1"
+yaserde = "0.11.2"
+yaserde_derive = "0.11.2"
 
 [build-dependencies]
 prost-build = "0.13.3"
-pbjson-build = "0.7.0"
+pbjson-build = { version = "0.7.0", optional = true }
+#pbjson-build = { path = "../../../pbjson/pbjson-build" }

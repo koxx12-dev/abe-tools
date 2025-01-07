@@ -1,5 +1,5 @@
-use crate::generate_container_encode_match;
-use crate::util::{get_key_from_name, key_to_json};
+use crate::{generate_container_encode_match, DataFormat};
+use crate::util::{get_key_from_name, key_to_string};
 use clap::{Args, Subcommand};
 use epic_balance::{proto, BalancingDataArchive, BalancingDataTypes};
 use std::fs::File;
@@ -32,19 +32,22 @@ pub(super) struct BalancingDecodeArgs {
     #[arg(
         long,
         short,
-        help = "Location to save the decoded json, does not apply if --all is used",
+        help = "Location to save the decoded container file, does not apply if --all is used",
         value_name = "FILE"
     )]
-    pub output_json_path: Option<PathBuf>,
+    pub output_file_path: Option<PathBuf>,
     #[arg(long = "all", short = 'A', help = "Export all keys in the container")]
     pub export_all: bool,
+
+    #[arg(help = "Data format to output the container file in", long, short = 'O', default_value_t=DataFormat::Json)]
+    pub output_as: DataFormat,
 }
 #[derive(Args, Clone)]
 #[command(version, about, long_about = Some("Encode a serialized balancing data container"), aliases = ["e", "pack", "import", "reimport"]
 )]
 pub(super) struct BalancingEncodeArgs {
-    #[arg(help = "Location of the json file to encode into the container")]
-    pub container_json_path: PathBuf,
+    #[arg(help = "Location of the container file to encode into the container")]
+    pub container_file_path: PathBuf,
     #[arg(help = "Location to save the encoded container")]
     pub output_file_path: PathBuf,
 }
@@ -65,9 +68,9 @@ pub(super) fn decode_container(
 
         for key in keys {
             let enum_key = BalancingDataTypes::from_str(&key)?;
-            let json = key_to_json(enum_key, &reader)?;
+            let data = key_to_string(enum_key, &reader, args.output_as)?;
 
-            std::fs::write(format!("{}.json", key.to_string()), json)?;
+            std::fs::write(format!("{}.{}", key.to_string(), args.output_as.to_string()), data)?;
         }
     } else {
         let key = get_key_from_name(
@@ -76,16 +79,16 @@ pub(super) fn decode_container(
                 .ok_or(anyhow!("No container name provided"))?,
         )?;
 
-        let json = key_to_json(key, &reader)?;
+        let data = key_to_string(key, &reader, args.output_as)?;
 
-        if let Some(output_json_path) = args.output_json_path {
-            if !output_json_path.exists() {
-                File::create(&output_json_path)?;
+        if let Some(output_file_path) = args.output_file_path {
+            if !output_file_path.exists() {
+                File::create(&output_file_path)?;
             }
 
-            std::fs::write(output_json_path, json)?;
+            std::fs::write(output_file_path, data)?;
         } else {
-            std::fs::write(format!("{}.json", key.to_string()), json)?;
+            std::fs::write(format!("{}.{}", key.to_string(), args.output_as.to_string()), data)?;
         }
     }
 
@@ -107,9 +110,10 @@ pub(super) fn encode_container(
         Err(_) => BalancingDataArchive::new_gzipped(data.as_slice())?,
     };
 
-    let json = std::fs::read_to_string(args.container_json_path)?;
+    let data = std::fs::read_to_string(args.container_file_path)?;
+    let data_format = if data.starts_with("{") { DataFormat::Json } else { DataFormat::Ron };
 
-    generate_container_encode_match!(archive, key, &json,
+    generate_container_encode_match!(archive, key, &data, data_format,
         BattleBalancingData => proto::BattleBalancingData,
         ChronicleCaveFloorBalancingData => proto::ChronicleCaveFloorBalancingData,
         CustomMessageBalancingData => proto::CustomMessageBalancingData,

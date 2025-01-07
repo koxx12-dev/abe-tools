@@ -3,14 +3,24 @@ name = "epic_locale"
 version = "0.1.0"
 edition = "2021"
 
+[features]
+default = []
+serde = ["dep:pbjson-build", "dep:pbjson", "dep:serde"]
+json = ["serde", "dep:serde_json"]
+ron = ["serde", "dep:ron"]
+csv = ["serde", "dep:csv"]
+all = ["json", "ron", "csv"]
+
 [dependencies]
 prost = "0.13.3"
-serde = "1.0.210"
-serde_json = "1.0.128"
-pbjson = "0.7.0"
+serde = { version = "1.0.210", optional = true }
+serde_json = { version = "1.0.128", optional = true }
+pbjson = { version = "0.7.0", optional = true }
 flate2 = "1.0.34"
 anyhow = "1.0.82"
+ron = { version = "0.8.1", optional = true }
+csv = { version = "1.3.1", optional = true }
 
 [build-dependencies]
 prost-build = "0.13.3"
-pbjson-build = "0.7.0"
+pbjson-build = { version = "0.7.0", optional = true }

@@ -1,6 +1,7 @@
 use std::env;
 use std::path::PathBuf;
 
+#[cfg(feature = "serde")]
 use pbjson_build;
 
 fn main() -> Result<(), std::io::Error> {
@@ -19,9 +20,14 @@ fn main() -> Result<(), std::io::Error> {
         // .extern_path(".google.protobuf", "::pbjson_types")
         .compile_protos(&proto_files, &[root])?;
 
-    let descriptor_set = std::fs::read(descriptor_path)?;
-    pbjson_build::Builder::new()
-        .register_descriptors(&descriptor_set)?
-        .build(&[".abepic.locale"])?;
+    #[cfg(feature = "serde")]
+    {
+        let descriptor_set = std::fs::read(descriptor_path)?;
+
+        pbjson_build::Builder::new()
+            .register_descriptors(&descriptor_set)?
+            .build(&[".abepic.locale"])?;
+    }
+    
     Ok(())
 }

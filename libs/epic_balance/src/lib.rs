@@ -5,17 +5,26 @@ use std::{
     io::{Read, Write},
 };
 
-use anyhow::{anyhow, bail};
+use anyhow::bail;
 use prost::{
     bytes::{Buf, BufMut},
     DecodeError, Message,
 };
+
+#[cfg(feature = "ron")]
+use ron::{
+    extensions::Extensions,
+    Options
+};
+
+#[cfg(feature = "serde")]
 use serde::Serialize;
 
 use proto::SerializedBalancingDataContainer;
 
 pub mod proto {
     include!(concat!(env!("OUT_DIR"), "/abepic.balancing.rs"));
+    #[cfg(feature = "serde")]
     include!(concat!(env!("OUT_DIR"), "/abepic.balancing.serde.rs"));
 }
 
@@ -84,6 +93,16 @@ impl BalancingDataArchive {
         self.get_data_key_decoded::<T>(&key.to_string())
     }
 
+    #[cfg(feature = "ron")]
+    pub fn get_data_key_decoded_ron<T>(&self, key: &str) -> anyhow::Result<String>
+    where
+        T: Message + Serialize + Default,
+    {
+        let data = self.get_data_key_decoded::<T>(key)?;
+        Ok(ron::ser::to_string_pretty(&data, Default::default())?)
+    }
+    
+    #[cfg(feature = "json")]
     pub fn get_data_key_decoded_json<T>(&self, key: &str) -> anyhow::Result<String>
     where
         T: Message + Serialize + Default,
@@ -92,6 +111,15 @@ impl BalancingDataArchive {
         Ok(serde_json::to_string_pretty(&data)?)
     }
 
+    #[cfg(feature = "ron")]
+    pub fn get_data_enum_decoded_ron<T>(&self, key: BalancingDataTypes) -> anyhow::Result<String>
+    where
+        T: Message + Serialize + Default,
+    {
+        self.get_data_key_decoded_ron::<T>(&key.to_string())
+    }
+    
+    #[cfg(feature = "json")]
     pub fn get_data_enum_decoded_json<T>(&self, key: BalancingDataTypes) -> anyhow::Result<String>
     where
         T: Message + Serialize + Default,
@@ -117,6 +145,18 @@ impl BalancingDataArchive {
         Ok(())
     }
 
+    #[cfg(feature = "ron")]
+    pub fn set_data_key_ron<T>(&mut self, key: &str, ron: &str) -> anyhow::Result<()>
+    where
+        T: Message + Default + serde::de::DeserializeOwned,
+    {
+        //todo: there is def a less stupid way of doing this
+        let options = Options::default().with_default_extension(Extensions::IMPLICIT_SOME);
+        let data: T = options.from_str(ron)?;
+        self.set_data_key(key, data)
+    }
+    
+    #[cfg(feature = "json")]
     pub fn set_data_key_json<T>(&mut self, key: &str, json: &str) -> anyhow::Result<()>
     where
         T: Message + Default + serde::de::DeserializeOwned,
@@ -132,6 +172,19 @@ impl BalancingDataArchive {
         self.set_data_key(key.to_string().as_str(), data)
     }
 
+    #[cfg(feature = "ron")]
+    pub fn set_data_enum_ron<T>(
+        &mut self,
+        key: BalancingDataTypes,
+        ron: &str,
+    ) -> anyhow::Result<()>
+    where
+        T: Message + Default + serde::de::DeserializeOwned,
+    {
+        self.set_data_key_ron::<T>(key.to_string().as_str(), ron)
+    }
+    
+    #[cfg(feature = "json")]
     pub fn set_data_enum_json<T>(
         &mut self,
         key: BalancingDataTypes,
@@ -155,14 +208,14 @@ impl BalancingDataArchive {
 
         writer
             .write_all(&encoder.finish()?)
-            .map_err(|err| anyhow!(err))
+            .map_err(anyhow::Error::new)
     }
 
     pub fn write<W>(&self, writer: &mut W) -> anyhow::Result<()>
     where
         W: BufMut + Write,
     {
-        self.container.encode(writer).map_err(|err| anyhow!(err))
+        self.container.encode(writer).map_err(anyhow::Error::new)
     }
 
     pub fn save(&self, mut file: File) -> anyhow::Result<()> {

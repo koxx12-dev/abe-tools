@@ -21,7 +21,7 @@ message BonusEventBalancingData {
         optional uint32 end_date = 5;
         optional string icon_id = 6;
         optional string atlas_id = 7;
-        optional string locale_id = 8;
+        optional string loca_id = 8;
         optional bool teased_before_running = 9 [default = false];
     }
 
@@ -197,7 +197,7 @@ message BannerBalancingData {
     message BannerData {
         optional string name_id = 1;
         optional string asset_id = 2;
-        optional string locale_id = 3;
+        optional string loca_id = 3;
         optional string default_inventory_name_id = 4;
         optional int32 base_health = 5 [default = 0];
         optional int32 per_level_health = 6 [default = 0];
@@ -292,7 +292,7 @@ message BasicShopOfferBalancingData {
         optional string category = 5;
         optional string name_id = 6;
         optional string asset_id = 7;
-        optional string locale_id = 8;
+        optional string loca_id = 8;
         optional int32 discount_value = 9 [default = 0];
         repeated Requirement obsolete_discount_requirements = 10;
         optional int32 obsolete_discount_start_date = 11 [default = 0];
@@ -302,7 +302,7 @@ message BasicShopOfferBalancingData {
         optional string atlas_name_id = 15;
         repeated float special_offer_background_color = 16 [packed = false];
         repeated float special_offer_label_color = 17 [packed = false];
-        optional string special_offer_locale_id = 18;
+        optional string special_offer_loca_id = 18;
         optional bool display_as_large = 19 [default = false];
         optional bool obsolete_show_discount_popup = 20 [default = false];
         optional string obsolete_popup_loca = 21;
@@ -410,7 +410,7 @@ message BattleBalancingData {
 message BattleHintBalancingData {
     message BattleHintData {
         optional string name_id = 1;
-        optional string locale_id = 2;
+        optional string loca_id = 2;
         optional string top_icon_id = 3;
         optional string top_atlas_id = 4;
         optional string bottom_icon_id = 5;
@@ -472,7 +472,7 @@ message BirdBalancingData {
     message BirdData {
         optional string name_id = 1;
         optional string asset_id = 2;
-        optional string locale_id = 3;
+        optional string loca_id = 3;
         optional string default_inventory_name_id = 4;
         optional int32 base_health = 5 [default = 0];
         optional int32 base_attack = 6 [default = 0];
@@ -505,7 +505,7 @@ message BossBalancingData {
     message BossData {
         optional string name_id = 1;
         optional string asset_id = 2;
-        optional string locale_id = 3;
+        optional string loca_id = 3;
         optional string default_inventory_name_id = 4;
         optional int32 base_health = 5 [default = 0];
         optional int32 base_attack = 6 [default = 0];
@@ -528,7 +528,7 @@ message BossBalancingData {
         optional int32 time_to_reach_camp = 23 [default = 0];
         optional int32 time_to_reactivate = 24 [default = 0];
         optional string collection_group_id = 25;
-        optional string defeated_label_locale_id = 26;
+        optional string defeated_label_loca_id = 26;
     }
 
     repeated BossData boss_data = 1;
@@ -624,8 +624,8 @@ message CollectionGroupBalancingData {
         map<string, int32> fallback_reward = 4;
         optional string reward_asset_base_id = 5;
         optional string fallback_reward_asset_base_id = 6;
-        optional string reward_locale_id = 7;
-        optional string fallback_reward_locale_id = 8;
+        optional string reward_loca_id = 7;
+        optional string fallback_reward_loca_id = 8;
         repeated Requirement component_requirements = 9;
         map<string, int32> component_fallback_loot = 10;
         repeated Requirement fallback_reward_requirements = 11;
@@ -709,7 +709,7 @@ message CustomMessageBalancingData {
     message CustomMessageData {
         optional string name_id = 1;
         optional string npc_name_id = 2;
-        optional string locale_id = 3;
+        optional string loca_id = 3;
         map<string, int32> loot_table_reward = 4;
         optional string button_atlas_id = 5;
         optional string button_sprite_name_id = 6;
@@ -934,7 +934,7 @@ message HotspotBalancingData {
         optional HotspotType type = 2 [default = UNKNOWN];
         repeated string battle_id = 3;
         map<string, int32> hotspot_contents = 4;
-        optional string zone_locale_ident = 5;
+        optional string zone_loca_ident = 5;
         optional int32 zone_stage_index = 6 [default = 0];
         repeated Requirement obsolete_enter_requirements = 7;
         optional uint32 cooldown_in_seconds = 8;
@@ -1009,7 +1009,7 @@ message LootTableBalancingData {
         repeated LootTableEntry loot_table_entries = 2;
         optional LootTableType type = 3 [default = PROBABILITY];
         optional string prefab_id = 4;
-        optional string locale_id = 5;
+        optional string loca_id = 5;
     }
 
     repeated LootTableData loot_table_data = 1;
@@ -1052,7 +1052,7 @@ message PigBalancingData {
     message PigData {
         optional string name_id = 1;
         optional string asset_id = 2;
-        optional string locale_id = 3;
+        optional string loca_id = 3;
         optional string default_inventory_name_id = 4;
         optional int32 base_health = 5 [default = 0];
         optional int32 base_attack = 6 [default = 0];
@@ -1149,7 +1149,7 @@ message PvPObjectivesBalancingData {
 
         optional string name_id = 1;
         optional ObjectivesRequirement requirement = 2 [default = WIN_TOTAL];
-        optional string locale_ident = 3;
+        optional string loca_ident = 3;
         optional string requirement_value = 4;
         optional string requirement_value2 = 5;
         optional int32 amount = 6 [default = 0];
@@ -1285,7 +1285,7 @@ message ShopBalancingData {
         optional int32 slots = 2 [default = 0];
         repeated string categories = 3;
         optional string asset_id = 4;
-        optional string locale_id = 5;
+        optional string loca_id = 5;
         optional string atlas_id = 6;
     }
 
@@ -1336,7 +1336,7 @@ message SkillBalancingData {
 
         optional string name_id = 1;
         optional string asset_id = 2;
-        optional string locale_id = 3;
+        optional string loca_id = 3;
         map<string, float> skill_parameters = 4;
         optional string skill_template_type = 5;
         optional int32 effect_duration = 6 [default = 0];
@@ -1457,7 +1457,7 @@ message WorldBalancingData {
         optional float gacha_preview_percent_set = 51 [default = 0];
         repeated LevelRangeValueTable level_rubber_band_tables = 52;
         repeated int32 daily_chain_additional_bonus_per_day = 53 [packed = false];
-        optional string daily_chain_header_locale_id = 54;
+        optional string daily_chain_header_loca_id = 54;
         optional uint32 daily_chain_timer_until_timestamp = 55;
         optional int32 global_event_discount = 56 [default = 0];
         repeated int32 mastery_from_experience_multiplier = 57 [packed = false];
@@ -1530,7 +1530,7 @@ message ShopOfferBalancingData {
         optional string category = 7;
         optional string asset_id = 8;
         optional int32 slot_id = 9 [default = 0];
-        optional string locale_id = 10;
+        optional string loca_id = 10;
         optional RelativeLevelType level_type = 11;
         repeated Requirement buy_requirements_scaling = 12;
         repeated Requirement show_requirements_scaling = 13;

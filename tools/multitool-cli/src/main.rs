@@ -7,20 +7,22 @@ mod macros;
 mod prefs;
 mod util;
 
+use std::fmt::Display;
 use crate::balancing::{decode_container, encode_container, BalancingAction, BalancingArgs};
 use crate::locale::{decode_locale, encode_locale, LocaleAction, LocaleArgs};
 use crate::prefs::{decode_prefs, encode_prefs, PrefsAction, PrefsArgs};
-use clap::Parser;
+use clap::{Parser, ValueEnum};
 
 #[cfg(feature = "dump")]
 use {
-    crate::util::key_to_json,
+    crate::util::key_to_string,
     epic_balance::{proto, BalancingDataArchive, BalancingDataTypes},
     prost::DecodeError,
     std::cmp::Ordering,
     std::collections::HashMap,
     std::str::FromStr,
 };
+
 
 #[derive(Parser)]
 #[command(
@@ -31,6 +33,12 @@ enum Cli {
     Balancing(BalancingArgs),
     Prefs(PrefsArgs),
     Locale(LocaleArgs),
+}
+
+#[derive(ValueEnum, Copy, Clone)]
+pub(crate) enum DataFormat {
+    Ron,
+    Json,
 }
 
 fn main() {
@@ -86,8 +94,8 @@ fn dump_balancing() {
                     key.clone(),
                     reader.get_data_key(key.as_str()).unwrap().len(),
                 );
-                let serilize: String = key_to_json(data_type, &reader).unwrap();
-                std::fs::write(format!("{}.json", key), serilize).unwrap();
+                let serilize: String = key_to_string(data_type, &reader, DataFormat::Ron).unwrap();
+                std::fs::write(format!("{}.Ron", key), serilize).unwrap();
                 std::fs::write(
                     format!("{}.bin", key),
                     reader.get_data_key(key.as_str()).unwrap(),
@@ -180,8 +188,8 @@ fn dump_balancing() {
 
         let result: Result<(), DecodeError> = match BalancingDataTypes::from_str(&key) {
             Ok(data_type) => {
-                let serilize: String = key_to_json(data_type, &reader).unwrap();
-                std::fs::write(format!("{}_new.json", key), serilize).unwrap();
+                let serilize: String = key_to_string(data_type, &reader, DataFormat::Ron).unwrap();
+                std::fs::write(format!("{}_new.ron", key), serilize).unwrap();
                 std::fs::write(
                     format!("{}_new.bin", key),
                     new_data.get_data_key(key.as_str()).unwrap(),
@@ -227,4 +235,14 @@ fn dump_balancing() {
     std::fs::write(DEBUG_FILE, buf).unwrap();
 
     println!("Done");
+}
+
+impl Display for DataFormat {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let str = match self {
+            DataFormat::Ron => "ron",
+            DataFormat::Json => "json"
+        };
+        write!(f, "{}", str)
+    }
 }

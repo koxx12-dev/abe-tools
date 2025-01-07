@@ -11,9 +11,16 @@ use prost::Message;
 use url_escape::NON_ALPHANUMERIC;
 use yaserde::ser::Config;
 
+#[cfg(feature = "ron")]
+use ron::{
+    extensions::Extensions,
+    Options
+};
+
 pub mod proto {
     pub mod prefs {
         include!(concat!(env!("OUT_DIR"), "/abepic.prefs.rs"));
+        #[cfg(feature = "serde")]
         include!(concat!(env!("OUT_DIR"), "/abepic.prefs.serde.rs"));
     }
 
@@ -33,9 +40,9 @@ impl PlayerPrefsData {
         }
     }
 
-    pub fn from_xml(xml_contents: &str) -> anyhow::Result<Self> {
+    pub fn from_prefs_xml(xml_contents: &str) -> anyhow::Result<Self> {
         let mut xml =
-            yaserde::de::from_str::<PlayerPrefsXml>(xml_contents).map_err(|err| anyhow!(err))?;
+            yaserde::de::from_str::<PlayerPrefsXml>(xml_contents).map_err(anyhow::Error::msg)?;
         let player_key = xml
             .strings
             .iter_mut()
@@ -49,27 +56,48 @@ impl PlayerPrefsData {
         Ok(Self { data })
     }
 
-    pub fn from_json(json_contents: &str) -> anyhow::Result<Self> {
-        let data = serde_json::from_str::<PlayerData>(json_contents)?;
+    #[cfg(feature = "json")]
+    pub fn from_json(contents: &str) -> anyhow::Result<Self> {
+        let data = serde_json::from_str::<PlayerData>(contents)?;
         Ok(Self { data })
     }
 
+    #[cfg(feature = "json")]
     pub fn to_json_pretty(&self) -> serde_json::Result<String> {
         serde_json::to_string_pretty::<PlayerData>(&self.data)
     }
 
+    #[cfg(feature = "json")]
     pub fn to_json(&self) -> serde_json::Result<String> {
         serde_json::to_string::<PlayerData>(&self.data)
     }
 
-    pub fn to_xml(&self, xml_contents: &str, config: Option<Config>) -> anyhow::Result<String> {
+    #[cfg(feature = "ron")]
+    pub fn from_ron(contents: &str) -> anyhow::Result<Self> {
+        //todo: there is def a less stupid way of doing this
+        let options = Options::default().with_default_extension(Extensions::IMPLICIT_SOME);
+        let data = options.from_str::<PlayerData>(contents)?;
+        Ok(Self { data })
+    }
+
+    #[cfg(feature = "ron")]
+    pub fn to_ron(&self) -> ron::Result<String> {
+        ron::ser::to_string::<PlayerData>(&self.data)
+    }
+
+    #[cfg(feature = "ron")]
+    pub fn to_ron_pretty(&self) -> ron::Result<String> {
+        ron::ser::to_string_pretty::<PlayerData>(&self.data, Default::default())
+    }
+
+    pub fn to_prefs_xml(&self, xml_contents: &str, config: Option<Config>) -> anyhow::Result<String> {
         let config = config.unwrap_or(Config {
             perform_indent: true,
             ..Default::default()
         });
 
         let mut xml =
-            yaserde::de::from_str::<PlayerPrefsXml>(xml_contents).map_err(|err| anyhow!(err))?;
+            yaserde::de::from_str::<PlayerPrefsXml>(xml_contents).map_err(anyhow::Error::msg)?;
         let xml_player_key = xml
             .strings
             .iter_mut()
@@ -87,7 +115,7 @@ impl PlayerPrefsData {
 
         xml_player_key.value = encoded_player_data;
 
-        Ok(yaserde::ser::to_string_with_config(&xml, &config).map_err(|err| anyhow!(err))?)
+        Ok(yaserde::ser::to_string_with_config(&xml, &config).map_err(anyhow::Error::msg)?)
     }
 
     pub fn get_data(&self) -> &PlayerData {

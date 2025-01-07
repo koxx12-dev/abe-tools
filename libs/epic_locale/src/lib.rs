@@ -1,11 +1,17 @@
-use crate::proto::SerializedLocalizedTexts;
-use anyhow::anyhow;
+use crate::proto::{LocaleBalancingDataBase, SerializedLocalizedTexts};
 use prost::bytes::{Buf, BufMut};
 use prost::Message;
 use std::io::{Read, Write};
 
+#[cfg(feature = "ron")]
+use ron::{
+    extensions::Extensions,
+    Options
+};
+
 pub mod proto {
     include!(concat!(env!("OUT_DIR"), "/abepic.locale.rs"));
+    #[cfg(feature = "serde")]
     include!(concat!(env!("OUT_DIR"), "/abepic.locale.serde.rs"));
 }
 
@@ -71,17 +77,58 @@ impl LocaleDataContainer {
         Ok(())
     }
 
-    pub fn from_json(json_contents: &str) -> anyhow::Result<Self> {
-        let locale = serde_json::from_str::<SerializedLocalizedTexts>(json_contents)?;
+    #[cfg(feature = "json")]
+    pub fn from_json(contents: &str) -> anyhow::Result<Self> {
+        let locale = serde_json::from_str::<SerializedLocalizedTexts>(contents)?;
         Ok(Self { locale })
     }
 
+    #[cfg(feature = "json")]
     pub fn to_json_pretty(&self) -> serde_json::Result<String> {
         serde_json::to_string_pretty::<SerializedLocalizedTexts>(&self.locale)
     }
 
+    #[cfg(feature = "json")]
     pub fn to_json(&self) -> serde_json::Result<String> {
         serde_json::to_string::<SerializedLocalizedTexts>(&self.locale)
+    }
+
+    #[cfg(feature = "ron")]
+    pub fn from_ron(contents: &str) -> anyhow::Result<Self> {
+        //todo: there is def a less stupid way of doing this
+        let options = Options::default().with_default_extension(Extensions::IMPLICIT_SOME);
+        let locale = options.from_str::<SerializedLocalizedTexts>(contents)?;
+        Ok(Self { locale })
+    }
+
+    #[cfg(feature = "ron")]
+    pub fn to_ron(&self) -> ron::Result<String> {
+        ron::ser::to_string::<SerializedLocalizedTexts>(&self.locale)
+    }
+
+    #[cfg(feature = "ron")]
+    pub fn to_ron_pretty(&self) -> ron::Result<String> {
+        ron::ser::to_string_pretty::<SerializedLocalizedTexts>(&self.locale, Default::default())
+    }
+    
+    #[cfg(feature = "csv")]
+    pub fn from_csv(contents: &str) -> anyhow::Result<Self> {
+        let mut reader = csv::Reader::from_reader(contents.as_bytes());
+        let mut locale = SerializedLocalizedTexts::default();
+        for result in reader.deserialize() {
+            let record: LocaleBalancingDataBase = result?;
+            locale.texts.push(record);
+        }
+        Ok(Self { locale })
+    }
+    
+    #[cfg(feature = "csv")]
+    pub fn to_csv(&self) -> anyhow::Result<String> {
+        let mut wtr = csv::Writer::from_writer(vec![]);
+        for record in &self.locale.texts {
+            wtr.serialize(record)?;
+        }
+        Ok(String::from_utf8(wtr.into_inner()?)?)
     }
 
     pub fn get_locale(&self) -> &SerializedLocalizedTexts {
@@ -94,6 +141,9 @@ impl LocaleDataContainer {
 
     pub fn set_locale(&mut self, data: SerializedLocalizedTexts) {
         self.locale = data;
+    }
+    pub fn sort(&mut self) {
+        self.locale.texts.sort_by(|a, b| a.name_id.cmp(&b.name_id));
     }
 
     pub fn write_gzipped<W>(&self, writer: &mut W) -> anyhow::Result<()>
@@ -108,13 +158,13 @@ impl LocaleDataContainer {
 
         writer
             .write_all(&encoder.finish()?)
-            .map_err(|err| anyhow!(err))
+            .map_err(anyhow::Error::new)
     }
 
     pub fn write<W>(&self, writer: &mut W) -> anyhow::Result<()>
     where
         W: BufMut + Write,
     {
-        self.locale.encode(writer).map_err(|err| anyhow!(err))
+        self.locale.encode(writer).map_err(anyhow::Error::new)
     }
 }

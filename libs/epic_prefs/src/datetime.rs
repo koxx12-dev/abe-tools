@@ -2,12 +2,14 @@ use crate::proto::bcl;
 use crate::proto::bcl::date_time::{DateTimeKind, TimeSpanScale};
 use anyhow::anyhow;
 use chrono::{DateTime, FixedOffset, NaiveDateTime, Utc};
-use serde::de::Visitor;
-use serde::Serialize;
+
+#[cfg(feature = "serde")]
+use serde::{de::Visitor,Serialize};
 
 static MIN_TIMESTAMP: i64 = -8334601228800;
 static MAX_TIMESTAMP: i64 = 8210266876799;
 
+#[allow(dead_code)]
 static DATE_FORMAT: &str = "%Y-%m-%dT%H:%M:%S";
 
 impl TryFrom<bcl::DateTime> for DateTime<Utc> {
@@ -79,7 +81,7 @@ impl From<DateTime<Utc>> for bcl::DateTime {
         }
     }
 }
-
+#[cfg(feature = "serde")]
 impl Serialize for bcl::DateTime {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -91,8 +93,10 @@ impl Serialize for bcl::DateTime {
 }
 
 //Taken from pbjson-types
+#[allow(dead_code)]
 struct DatetimeVisitor;
 
+#[allow(dead_code)]
 fn parse_custom_timestamp(timestamp: &str) -> anyhow::Result<DateTime<FixedOffset>> {
     let (datetime_str, offset_str) = timestamp
         .rsplit_once('+')
@@ -117,6 +121,7 @@ fn parse_custom_timestamp(timestamp: &str) -> anyhow::Result<DateTime<FixedOffse
     ))
 }
 
+#[cfg(feature = "serde")]
 impl<'de> Visitor<'de> for DatetimeVisitor {
     type Value = bcl::DateTime;
 
@@ -133,7 +138,7 @@ impl<'de> Visitor<'de> for DatetimeVisitor {
         Ok(d.into())
     }
 }
-
+#[cfg(feature = "serde")]
 impl<'de> serde::Deserialize<'de> for bcl::DateTime {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where

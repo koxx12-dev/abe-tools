@@ -17,9 +17,13 @@ fn main() -> Result<(), std::io::Error> {
         .file_descriptor_set_path(&descriptor_path)
         .compile_protos(&proto_files, &[root])?;
 
-    let descriptor_set = std::fs::read(descriptor_path)?;
-    pbjson_build::Builder::new()
-        .register_descriptors(&descriptor_set)?
-        .build(&["."])?;
+    #[cfg(feature = "serde")]
+    {
+        let descriptor_set = std::fs::read(descriptor_path)?;
+
+        pbjson_build::Builder::new()
+            .register_descriptors(&descriptor_set)?
+            .build(&["."])?;
+    }
     Ok(())
 }
