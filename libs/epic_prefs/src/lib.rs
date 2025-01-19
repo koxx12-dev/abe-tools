@@ -1,5 +1,6 @@
 mod datetime;
 mod xml;
+mod lzma;
 
 use crate::proto::prefs::PlayerData;
 use crate::xml::PlayerPrefsXml;
@@ -16,6 +17,7 @@ use ron::{
     extensions::Extensions,
     Options
 };
+use crate::lzma::{compress_data, decompress_data};
 
 pub mod proto {
     pub mod prefs {
@@ -88,6 +90,38 @@ impl PlayerPrefsData {
     #[cfg(feature = "ron")]
     pub fn to_ron_pretty(&self) -> ron::Result<String> {
         ron::ser::to_string_pretty::<PlayerData>(&self.data, Default::default())
+    }
+    
+    #[cfg(feature = "sdkv2")]
+    pub fn from_sdkv2(contents: &str) -> anyhow::Result<Self> {
+        let cleaned_contents = contents.replace("_","/");
+        let cleaned_contents = cleaned_contents.replace("-","+");
+        
+        let decoded = BASE64_STANDARD.decode(cleaned_contents.as_bytes())?;
+        
+        let decompressed = decompress_data(decoded.as_slice())?;
+        
+        let decoded = BASE64_STANDARD.decode(decompressed)?;
+        
+        let data = PlayerData::decode(decoded.as_slice())?;
+        Ok(Self { data })
+    }
+    
+    #[cfg(feature = "sdkv2")]
+    pub fn to_sdkv2(&self) -> anyhow::Result<String> {
+        let mut buf = Vec::new();
+        self.data.encode(&mut buf)?;
+        
+        let encoded = BASE64_STANDARD.encode(buf);
+        
+        let compressed = compress_data(encoded)?;
+        
+        let encoded = BASE64_STANDARD.encode(compressed);
+        
+        let encoded = encoded.replace("/","_");
+        let encoded = encoded.replace("+","-");
+        
+        Ok(encoded)
     }
 
     pub fn to_prefs_xml(&self, xml_contents: &str, config: Option<Config>) -> anyhow::Result<String> {

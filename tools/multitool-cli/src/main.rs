@@ -6,6 +6,7 @@ mod locale;
 mod macros;
 mod prefs;
 mod util;
+mod sdkv2;
 
 use std::fmt::Display;
 use crate::balancing::{decode_container, encode_container, BalancingAction, BalancingArgs};
@@ -22,7 +23,7 @@ use {
     std::collections::HashMap,
     std::str::FromStr,
 };
-
+use crate::sdkv2::{Sdkv2Action, Sdkv2Args};
 
 #[derive(Parser)]
 #[command(
@@ -33,6 +34,7 @@ enum Cli {
     Balancing(BalancingArgs),
     Prefs(PrefsArgs),
     Locale(LocaleArgs),
+    SdkV2(Sdkv2Args),
 }
 
 #[derive(ValueEnum, Copy, Clone)]
@@ -59,6 +61,10 @@ fn main() {
             LocaleAction::Decode(args) => decode_locale(locale_args, args),
             LocaleAction::Encode(args) => encode_locale(locale_args, args),
         },
+        Cli::SdkV2(sdkv2_args) => match sdkv2_args.clone().sdkv2_action {
+            Sdkv2Action::Decode(args) => sdkv2::decode_sdkv2(sdkv2_args, args),
+            Sdkv2Action::Encode(args) => sdkv2::encode_sdkv2(sdkv2_args, args),
+        }
     };
 
     if let Err(e) = result {

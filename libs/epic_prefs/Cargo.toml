@@ -10,7 +10,8 @@ default = []
 serde = ["dep:pbjson-build", "dep:pbjson", "dep:serde"]
 json = ["serde", "dep:serde_json"]
 ron = ["serde", "dep:ron"]
-all = ["json", "ron"]
+sdkv2 = ["dep:liblzma"]
+all = ["json", "ron", "sdkv2"]
 
 [dependencies]
 prost = "0.13.3"
@@ -25,6 +26,7 @@ url-escape = "0.1.1"
 chrono = "0.4.38"
 yaserde = "0.11.2"
 yaserde_derive = "0.11.2"
+liblzma = { version = "0.3.5", optional = true }
 
 [build-dependencies]
 prost-build = "0.13.3"
