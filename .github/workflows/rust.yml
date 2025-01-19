@@ -1,4 +1,4 @@
-name: Rust Monorepo CI (Windows)
+name: Rust Monorepo CI
 
 on:
   workflow_dispatch:
