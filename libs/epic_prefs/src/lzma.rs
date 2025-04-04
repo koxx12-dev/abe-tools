@@ -1,7 +1,11 @@
 use std::io::Read;
-use liblzma::bufread::{XzDecoder, XzEncoder};
-use liblzma::stream::{LzmaOptions, Stream};
+#[cfg(feature = "sdkv2")]
+use liblzma::{
+    bufread::{XzDecoder, XzEncoder},
+    stream::{LzmaOptions, Stream}
+};
 
+#[cfg(feature = "sdkv2")]
 pub(crate) fn decompress_data(compressed_data: &[u8]) -> anyhow::Result<String> {
     let mut string = String::new();
 
@@ -13,6 +17,7 @@ pub(crate) fn decompress_data(compressed_data: &[u8]) -> anyhow::Result<String> 
     Ok(string)
 }
 
+#[cfg(feature = "sdkv2")]
 pub(crate) fn compress_data(decompressed_data: String) -> anyhow::Result<Vec<u8>> {
     let mut output = Vec::new();
 

@@ -11,14 +11,15 @@ ron = ["serde", "dep:ron"]
 all = ["json", "ron"]
 
 [dependencies]
-prost = "0.13.3"
-serde = { version = "1.0.210", optional = true }
-serde_json = { version = "1.0.128", optional = true }
+prost = { git = "https://github.com/koxx12-dev/prost.git", branch = "latest-stable" }
+serde = { version = "1.0.217", optional = true }
+serde_json = { version = "1.0.137", optional = true, features = ["preserve_order"] }
 pbjson = { version = "0.7.0", optional = true }
-flate2 = "1.0.34"
-anyhow = "1.0.82"
+flate2 = "1.0.35"
+anyhow = "1.0.95"
 ron = { version = "0.8.1", optional = true }
+indexmap = { version = "2.7.1", features = ["serde"] }
 
 [build-dependencies]
-prost-build = "0.13.3"
+prost-build = { git = "https://github.com/koxx12-dev/prost.git", branch = "latest-stable" }
 pbjson-build = { version = "0.7.0", optional = true }

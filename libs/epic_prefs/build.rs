@@ -1,4 +1,4 @@
-use std::env;
+use std::{env, fs};
 use std::path::PathBuf;
 
 #[cfg(feature = "serde")]
@@ -27,6 +27,19 @@ fn main() -> Result<(), std::io::Error> {
         pbjson_build::Builder::new()
             .register_descriptors(&descriptor_set)?
             .build(&[".abepic.prefs"])?;
+    }
+
+    let build_dir = PathBuf::from(env::var("OUT_DIR").unwrap());
+    let build_files = fs::read_dir(&build_dir).unwrap();
+    for file in build_files {
+        let file = file.unwrap();
+        let file_path = file.path();
+        let file_name = file_path.file_name().unwrap().to_str().unwrap();
+        if file_name.starts_with("abepic.prefs.serde") {
+            let file_content = fs::read_to_string(&file_path).unwrap();
+            let new_content = file_content.replace("std::collections::HashMap", "indexmap::IndexMap");
+            fs::write(&file_path, new_content).unwrap();
+        }
     }
     
     Ok(())

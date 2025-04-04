@@ -26,7 +26,7 @@ pub(super) enum PrefsAction {
 #[command(version, about, long_about = Some("Decode a xml player prefs file"), aliases = ["d", "unpack", "export"]
 )]
 pub(super) struct PrefsDecodeArgs {
-    #[arg(help = "Data format to output the player prefs in", long, short = 'O', default_value_t=DataFormat::Json)]
+    #[arg(help = "Data format to output the player prefs in", long, short = 'O', default_value_t=DataFormat::Ron)]
     pub output_as: DataFormat,
 }
 

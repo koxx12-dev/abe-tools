@@ -17,6 +17,7 @@ use ron::{
     extensions::Extensions,
     Options
 };
+#[cfg(feature = "sdkv2")]
 use crate::lzma::{compress_data, decompress_data};
 
 pub mod proto {

@@ -1,6 +1,6 @@
 [package]
 name = "multitool-cli"
-version = "0.3.0"
+version = "0.3.1"
 edition = "2021"
 
 [[bin]]
@@ -16,9 +16,9 @@ dump = []
 epic_balance = { path = "../../libs/epic_balance", features = ["all"]}
 epic_prefs = { path = "../../libs/epic_prefs", features = ["all"] }
 epic_locale = { path = "../../libs/epic_locale", features = ["all"] }
-serde_json = "1.0.128"
+serde_json = { version = "1.0.137", features = ["preserve_order"] }
 ron = "0.8.1"
-prost = "0.13.3"
-clap = { version = "4.5.20", features = ["derive"] }
-anyhow = "1.0.89"
+prost = { git = "https://github.com/koxx12-dev/prost.git", branch = "latest-stable" }
+clap = { version = "4.5.27", features = ["derive"] }
+anyhow = "1.0.95"
 

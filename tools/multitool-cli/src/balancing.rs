@@ -68,6 +68,9 @@ pub(super) fn decode_container(
 
         for key in keys {
             let enum_key = BalancingDataTypes::from_str(&key)?;
+
+            // prost_fix(enum_key, &mut reader)?;
+
             let data = key_to_string(enum_key, &reader, args.output_as)?;
 
             std::fs::write(format!("{}.{}", key.to_string(), args.output_as.to_string()), data)?;
@@ -78,6 +81,8 @@ pub(super) fn decode_container(
                 .container_name
                 .ok_or(anyhow!("No container name provided"))?,
         )?;
+
+        // prost_fix(key, &mut reader)?;
 
         let data = key_to_string(key, &reader, args.output_as)?;
 
@@ -177,3 +182,34 @@ pub(super) fn encode_container(
 
     Ok(())
 }
+
+// fn prost_fix(key: BalancingDataTypes, reader: &mut BalancingDataArchive) -> anyhow::Result<()> {
+//     //fixes for any prost related issues for balancing
+//     match key {
+//         SkillBalancingData => {
+//             let mut skill_data = reader.get_data_enum_decoded::<proto::SkillBalancingData>(SkillBalancingData)?;
+// 
+//             skill_data.skill_data.iter_mut().for_each(|x| {
+//                 //sort btreemap
+//                 let new_map:  BTreeMap<String, f32> = x.skill_parameters.iter().sorted_by(
+//                     |(a, _), (b, _)| {
+//                         if a.starts_with("summon") && !b.starts_with("summon") {
+//                             std::cmp::Ordering::Greater
+//                         } else if !a.starts_with("summon") && b.starts_with("summon") {
+//                             std::cmp::Ordering::Less
+//                         } else {
+//                             a.cmp(b)
+//                         }
+//                     }
+//                 ).map(|(a, b)| (a.clone(), b.clone())).collect();
+//                 
+//                 println!("{:?}", new_map);
+// 
+//                 x.skill_parameters = new_map;
+//             });
+//         }
+//         _ => {}
+//     }
+// 
+//     Ok(())
+// }
